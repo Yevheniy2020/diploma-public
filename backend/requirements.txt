@@ -1,0 +1,21 @@
+fastapi>=0.115
+uvicorn[standard]>=0.32
+sqlalchemy>=2.0
+sqlmodel>=0.0.22
+pydantic>=2.9
+pydantic-settings>=2.6
+python-multipart>=0.0.12
+groq>=0.13
+numpy>=2.0
+scipy>=1.14
+pillow>=10.4
+pathfinding>=1.0
+aiofiles>=24.1
+python-dotenv>=1.0
+
+# Trained intent classifier (services.intent_classifier + services.slot_extractor)
+transformers>=4.45
+torch>=2.4
+safetensors>=0.4
+accelerate>=1.1
+rapidfuzz>=3.10

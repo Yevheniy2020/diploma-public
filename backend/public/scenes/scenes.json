@@ -1,0 +1,8 @@
+[
+  {
+    "id": "apartment",
+    "name": "Apartment",
+    "glb_url": "/static/scenes/apartment.glb",
+    "default_map_id": 1
+  }
+]

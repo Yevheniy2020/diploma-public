@@ -1,0 +1,121 @@
+{"text": "а ну двигай в кухню", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "піди но до спальні швиденько", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "робот go to кухня please", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "доїдь до коридору тудою", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "мені треба щоб ти стояв у вітальні", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "can u roll over to the lounge", "intent": "NAVIGATE", "lang": "en"}
+{"text": "канай на балкон давай", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "натеррасу руляй", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "i wanna be in the office area now", "intent": "NAVIGATE", "lang": "en"}
+{"text": "дуй до точки три", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "прямі до кабінета номер два", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "а тепер метрів зо два вперед", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "здай назад трошки", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "scoot back a couple meters", "intent": "DRIVE_RELATIVE", "lang": "en"}
+{"text": "наметр вперед прокатись", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "вліво змістись сантиметрів на тридцять", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "move трохи forward", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "відкоти назад на півтора", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "впирьод на метор", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "nudge it to the left please", "intent": "DRIVE_RELATIVE", "lang": "en"}
+{"text": "ще метрик прямо і хорош", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "задом на метр відсунься", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "крутни наліво трошки", "intent": "ROTATE", "lang": "uk"}
+{"text": "spin around once for me", "intent": "ROTATE", "lang": "en"}
+{"text": "развернись кругом", "intent": "ROTATE", "lang": "uk"}
+{"text": "на дев'яносто градусів вправо обернись", "intent": "ROTATE", "lang": "uk"}
+{"text": "turn направо двічі", "intent": "ROTATE", "lang": "uk"}
+{"text": "обернись на пів кола", "intent": "ROTATE", "lang": "uk"}
+{"text": "павернись ліворуч будь ласка", "intent": "ROTATE", "lang": "uk"}
+{"text": "do a quick u-turn", "intent": "ROTATE", "lang": "en"}
+{"text": "крутись на місці вправо", "intent": "ROTATE", "lang": "uk"}
+{"text": "градусів сорок п'ять вліво крутни", "intent": "ROTATE", "lang": "uk"}
+{"text": "rotate a tiny bit clockwise", "intent": "ROTATE", "lang": "en"}
+{"text": "чеши на базу", "intent": "RETURN_HOME", "lang": "uk"}
+{"text": "take it back to the dock", "intent": "RETURN_HOME", "lang": "en"}
+{"text": "вертайсь звідки почав", "intent": "RETURN_HOME", "lang": "uk"}
+{"text": "вертай надому", "intent": "RETURN_HOME", "lang": "uk"}
+{"text": "go назад to base", "intent": "RETURN_HOME", "lang": "uk"}
+{"text": "на стартову вертайся вже", "intent": "RETURN_HOME", "lang": "uk"}
+{"text": "паехали дамой", "intent": "RETURN_HOME", "lang": "uk"}
+{"text": "head on back to square one", "intent": "RETURN_HOME", "lang": "en"}
+{"text": "до зарядки повертай", "intent": "RETURN_HOME", "lang": "uk"}
+{"text": "вернись де стояв спочатку", "intent": "RETURN_HOME", "lang": "uk"}
+{"text": "return to the home spot", "intent": "RETURN_HOME", "lang": "en"}
+{"text": "давай обведемо кухню", "intent": "START_SPACE", "lang": "uk"}
+{"text": "let's map out the garage", "intent": "START_SPACE", "lang": "en"}
+{"text": "починаєм нову зону спальня", "intent": "START_SPACE", "lang": "uk"}
+{"text": "обведикімнату підвал", "intent": "START_SPACE", "lang": "uk"}
+{"text": "start малювати hall", "intent": "START_SPACE", "lang": "uk"}
+{"text": "обводь периметр вітальні", "intent": "START_SPACE", "lang": "uk"}
+{"text": "відмічай нову кімнату комора", "intent": "START_SPACE", "lang": "uk"}
+{"text": "пачинай чертить ділянку склад", "intent": "START_SPACE", "lang": "uk"}
+{"text": "begin outlining the attic", "intent": "START_SPACE", "lang": "en"}
+{"text": "новий простір ванна заводь", "intent": "START_SPACE", "lang": "uk"}
+{"text": "берись малювати майстерню", "intent": "START_SPACE", "lang": "uk"}
+{"text": "о готово фіксуй", "intent": "FINISH_SPACE", "lang": "uk"}
+{"text": "lock it in", "intent": "FINISH_SPACE", "lang": "en"}
+{"text": "усьо запиши", "intent": "FINISH_SPACE", "lang": "uk"}
+{"text": "намалював тепер сейв", "intent": "FINISH_SPACE", "lang": "uk"}
+{"text": "ok зберігай it", "intent": "FINISH_SPACE", "lang": "uk"}
+{"text": "достатньо прийми", "intent": "FINISH_SPACE", "lang": "uk"}
+{"text": "збирежи будь ласка", "intent": "FINISH_SPACE", "lang": "uk"}
+{"text": "we are done here save it", "intent": "FINISH_SPACE", "lang": "en"}
+{"text": "все обвів закривай", "intent": "FINISH_SPACE", "lang": "uk"}
+{"text": "фінал запам'ятай зону", "intent": "FINISH_SPACE", "lang": "uk"}
+{"text": "wrap up the room", "intent": "FINISH_SPACE", "lang": "en"}
+{"text": "та ну його прибери чернетку", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "nah toss this draft", "intent": "CANCEL_SPACE", "lang": "en"}
+{"text": "атмєні всьо", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "я наплутав давай заново", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "cancel оце малювання", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "не то намалював кидай", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "скасуйй чорновик", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "forget this outline", "intent": "CANCEL_SPACE", "lang": "en"}
+{"text": "зітри що я тут начертив", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "облиш не треба ту зону", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "abort the drawing", "intent": "CANCEL_SPACE", "lang": "en"}
+{"text": "переназви балкон в лоджію", "intent": "RENAME_SPACE", "lang": "uk"}
+{"text": "call the office study from now on", "intent": "RENAME_SPACE", "lang": "en"}
+{"text": "хай кухня буде тепер їдальня", "intent": "RENAME_SPACE", "lang": "uk"}
+{"text": "перейминуй коридор на хол", "intent": "RENAME_SPACE", "lang": "uk"}
+{"text": "rename спальня to bedroom", "intent": "RENAME_SPACE", "lang": "uk"}
+{"text": "точку два обзви фінішем", "intent": "RENAME_SPACE", "lang": "uk"}
+{"text": "змінюй ім'я склад на комора", "intent": "RENAME_SPACE", "lang": "uk"}
+{"text": "switch the label balcony over to terrace", "intent": "RENAME_SPACE", "lang": "en"}
+{"text": "пирийменуй базу в дім", "intent": "RENAME_SPACE", "lang": "uk"}
+{"text": "дай ванній назву санвузол", "intent": "RENAME_SPACE", "lang": "uk"}
+{"text": "make corridor be called hallway", "intent": "RENAME_SPACE", "lang": "en"}
+{"text": "знеси мітку гараж", "intent": "DELETE_SPACE", "lang": "uk"}
+{"text": "wipe the kitchen marker", "intent": "DELETE_SPACE", "lang": "en"}
+{"text": "та зітри ту спальню вже", "intent": "DELETE_SPACE", "lang": "uk"}
+{"text": "убери балкондва", "intent": "DELETE_SPACE", "lang": "uk"}
+{"text": "delete коридор label", "intent": "DELETE_SPACE", "lang": "uk"}
+{"text": "винеси точку п'ять в смітник", "intent": "DELETE_SPACE", "lang": "uk"}
+{"text": "видоли терасу", "intent": "DELETE_SPACE", "lang": "uk"}
+{"text": "get the lounge off the map", "intent": "DELETE_SPACE", "lang": "en"}
+{"text": "мітку база геть", "intent": "DELETE_SPACE", "lang": "uk"}
+{"text": "стирай зону комора", "intent": "DELETE_SPACE", "lang": "uk"}
+{"text": "scrap the office tag", "intent": "DELETE_SPACE", "lang": "en"}
+{"text": "тормозни", "intent": "STOP", "lang": "uk"}
+{"text": "freeze right there", "intent": "STOP", "lang": "en"}
+{"text": "ша не їдь", "intent": "STOP", "lang": "uk"}
+{"text": "стопэ", "intent": "STOP", "lang": "uk"}
+{"text": "stop вже", "intent": "STOP", "lang": "uk"}
+{"text": "ні руш замри", "intent": "STOP", "lang": "uk"}
+{"text": "досить котитися", "intent": "STOP", "lang": "uk"}
+{"text": "quit moving", "intent": "STOP", "lang": "en"}
+{"text": "стой кажу", "intent": "STOP", "lang": "uk"}
+{"text": "гальмуй негайно", "intent": "STOP", "lang": "uk"}
+{"text": "cut the motors now", "intent": "STOP", "lang": "en"}
+{"text": "яка погода надворі", "intent": "UNKNOWN", "lang": "uk"}
+{"text": "what's the weather like today", "intent": "UNKNOWN", "lang": "en"}
+{"text": "шо там по новинах", "intent": "UNKNOWN", "lang": "uk"}
+{"text": "заспівай мені пісню", "intent": "UNKNOWN", "lang": "uk"}
+{"text": "tell me анекдот", "intent": "UNKNOWN", "lang": "uk"}
+{"text": "скільки буде два плюс два", "intent": "UNKNOWN", "lang": "uk"}
+{"text": "do you like pizza", "intent": "UNKNOWN", "lang": "en"}
+{"text": "ввімкни музику будь ласка", "intent": "UNKNOWN", "lang": "uk"}
+{"text": "ееее ну шо там", "intent": "UNKNOWN", "lang": "uk"}
+{"text": "who won the game last night", "intent": "UNKNOWN", "lang": "en"}
+{"text": "розкажи про себе щось", "intent": "UNKNOWN", "lang": "uk"}

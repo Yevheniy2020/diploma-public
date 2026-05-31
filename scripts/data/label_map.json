@@ -1,0 +1,13 @@
+{
+  "NAVIGATE": 0,
+  "DRIVE_RELATIVE": 1,
+  "ROTATE": 2,
+  "DELETE_SPACE": 3,
+  "RENAME_SPACE": 4,
+  "STOP": 5,
+  "RETURN_HOME": 6,
+  "UNKNOWN": 7,
+  "START_SPACE": 8,
+  "FINISH_SPACE": 9,
+  "CANCEL_SPACE": 10
+}

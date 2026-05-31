@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.sqlite
+*.sqlite3
+*.sqlite3.bak
+*.bak
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# Node
+node_modules/
+dist/
+.env*
+!.env.example
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Claude Code (local-only)
+CLAUDE.md
+.claude/
+
+# Trained intent model (regenerable from scripts/)
+backend/models/
+
+# Training datasets (regenerable via scripts/generate_dataset.py)
+scripts/data/intents.jsonl
+scripts/data/intents_eval.jsonl
+
+# Active-learning artefacts (collected by retrain_from_feedback.py)
+scripts/data/seeds_from_feedback.jsonl
+scripts/data/last_processed_correction.txt
+scripts/data/last_retrained_at.txt
+scripts/data/retrain_status.json
+scripts/data/learned_overrides.json
+scripts/data/pending_seeds.jsonl
+backend/logs/
