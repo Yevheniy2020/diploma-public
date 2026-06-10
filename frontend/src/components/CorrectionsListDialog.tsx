@@ -1,7 +1,3 @@
-// List + edit + delete UI for pending operator corrections.
-// Opens from the «Навчання» panel; lets the operator review what's
-// queued for the next retrain, fix mistakes (e.g. wrong slot value),
-// or drop entries that shouldn't go into training.
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   deleteCorrection,
@@ -82,7 +78,6 @@ function slotsToParams(intent: Intent, slots: SlotState): Record<string, unknown
       if (slots.target_or_name)
         params.name = slots.target_or_name.trim().toLowerCase()
       break
-    // FINISH_SPACE, CANCEL_SPACE, STOP, RETURN_HOME — no params.
     default:
       break
   }
@@ -340,9 +335,6 @@ function CorrectionsListDialog({ open, onClose }: Props) {
   const t = useT()
   const [rows, setRows] = useState<CorrectionRow[]>([])
   const [loading, setLoading] = useState(false)
-  // Select the raw spaces array; derive names with useMemo so we don't
-  // hand a fresh array to the selector on every render (would trigger
-  // Zustand's «getSnapshot should be cached» infinite loop).
   const roomsRaw = useAppStore((s) => s.spaces)
   const labels = useMemo(() => roomsRaw.map((r) => r.name), [roomsRaw])
 

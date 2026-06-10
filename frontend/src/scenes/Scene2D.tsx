@@ -1,10 +1,3 @@
-// Canvas top-down view. World coords: x→east, y→north, origin lower-left.
-// Canvas screen coords: x→right, y→down. We flip: screen_y = oy + (Hm - my) * scale.
-//
-// The render loop runs unconditionally so robot pose updates animate without
-// needing React to re-render this component every tick. The store fields it
-// reads (showGrid2D, showInflation, currentGoal, etc.) drive the next frame
-// because we capture them via getState() inside the rAF body.
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { plan, updateMap } from '../api/client'
 import { useT } from '../i18n'
@@ -15,15 +8,13 @@ import { toast } from '../state/useToaster'
 
 const PADDING = 28
 
-// Per-space palette cycled by id. Keep in sync with SpaceMarker3D.tsx —
-// fillRGB is the comma-separated rgba() body so we can vary alpha per space.
 const ROOM_PALETTE: { fillRGB: string; stroke: string; label: string }[] = [
-  { fillRGB: '59, 130, 246', stroke: '#1d4ed8', label: '#1e3a8a' }, // blue
-  { fillRGB: '16, 185, 129', stroke: '#047857', label: '#064e3b' }, // emerald
-  { fillRGB: '139, 92, 246', stroke: '#6d28d9', label: '#4c1d95' }, // violet
-  { fillRGB: '244, 63, 94', stroke: '#be123c', label: '#881337' }, // rose
-  { fillRGB: '6, 182, 212', stroke: '#0e7490', label: '#155e75' }, // cyan
-  { fillRGB: '161, 98, 7', stroke: '#854d0e', label: '#713f12' }, // mustard
+  { fillRGB: '59, 130, 246', stroke: '#1d4ed8', label: '#1e3a8a' },
+  { fillRGB: '16, 185, 129', stroke: '#047857', label: '#064e3b' },
+  { fillRGB: '139, 92, 246', stroke: '#6d28d9', label: '#4c1d95' },
+  { fillRGB: '244, 63, 94', stroke: '#be123c', label: '#881337' },
+  { fillRGB: '6, 182, 212', stroke: '#0e7490', label: '#155e75' },
+  { fillRGB: '161, 98, 7', stroke: '#854d0e', label: '#713f12' },
 ]
 
 function Scene2D() {
@@ -33,26 +24,20 @@ function Scene2D() {
 
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  // Edit-mode bookkeeping. `paintingRef` keeps the brush "value" (1 or 0)
-  // active while the mouse is down so a single drag paints/erases
-  // consistently. `lastCellRef` deduplicates same-cell move events.
   const paintingRef = useRef<0 | 1 | null>(null)
   const lastCellRef = useRef<number>(-1)
   const saveTimerRef = useRef<number | null>(null)
 
-  // Decode grid once per map change; used by both the render loop and click handler.
   const decoded = useMemo(() => {
     if (!currentMap?.grid_data_b64) return null
     return decodeGrid(currentMap.grid_data_b64)
   }, [currentMap?.grid_data_b64])
 
-  // Inflation halo grid — recomputed when the map changes.
   const inflated = useMemo(() => {
     if (!currentMap || !decoded) return null
     return dilateGrid(decoded, currentMap.width_cells, currentMap.height_cells, 2)
   }, [currentMap, decoded])
 
-  // Project world (m) → screen (px). World y is up; canvas y is down.
   const projection = useCallback(() => {
     const cvs = canvasRef.current
     const cont = containerRef.current
@@ -98,13 +83,11 @@ function Scene2D() {
       const xToPx = (mx: number) => ox + mx * scale
       const yToPx = (my: number) => oy + (heightM - my) * scale
 
-      // floor
       ctx.fillStyle = '#ffffff'
       ctx.fillRect(ox, oy, widthM * scale, heightM * scale)
 
       const s = useAppStore.getState()
 
-      // grid every 5 cells
       if (s.showGrid2D) {
         ctx.strokeStyle = '#e7e5e4'
         ctx.lineWidth = 0.5
@@ -124,18 +107,9 @@ function Scene2D() {
         }
       }
 
-      // Semantic spaces — translucent polygon fill + outline + centroid
-      // label. Each space gets a stable colour cycled by id; the home space
-      // (is_home) overrides with amber. Palette kept in sync with
-      // SpaceMarker3D.tsx so 2D and 3D show matching colours per space.
-      // Render home last so its tint sits on top when polygons overlap.
       const sortedSpaces = [...s.spaces].sort(
         (a, b) => Number(a.is_home) - Number(b.is_home),
       )
-      // First pass: space fills + outlines (under walls so the wall pattern
-      // reads on top of space body). Names are drawn in a separate pass
-      // below — after walls — so they're never hidden by a wall/furniture
-      // cell that happens to sit at the polygon's centroid.
       for (const space of sortedSpaces) {
         if (space.vertices.length < 3) continue
         const palette = space.is_home
@@ -156,7 +130,6 @@ function Scene2D() {
         ctx.stroke()
       }
 
-      // inflation halo (cells inflated but not original walls)
       if (s.showInflation && inflated && decoded) {
         ctx.fillStyle = 'rgba(180, 83, 9, 0.10)'
         for (let row = 0; row < currentMap.height_cells; row++) {
@@ -171,7 +144,6 @@ function Scene2D() {
         }
       }
 
-      // walls
       if (decoded) {
         ctx.fillStyle = '#1c1917'
         for (let row = 0; row < currentMap.height_cells; row++) {
@@ -185,14 +157,10 @@ function Scene2D() {
         }
       }
 
-      // outer border
       ctx.strokeStyle = '#0c0a09'
       ctx.lineWidth = 1.5
       ctx.strokeRect(ox - 0.5, oy - 0.5, widthM * scale + 1, heightM * scale + 1)
 
-      // Space labels — second pass, drawn AFTER walls so the name remains
-      // legible even if the polygon's centroid falls on a wall or
-      // furniture block. Each label has a thick white halo for contrast.
       for (const space of sortedSpaces) {
         if (space.vertices.length < 3) continue
         const palette = space.is_home
@@ -218,13 +186,11 @@ function Scene2D() {
         ctx.fillText(label, xToPx(cx), yToPx(cy))
       }
 
-      // path — dashed full path then solid remaining (from current waypoint)
       if (s.path.length > 0) {
         ctx.strokeStyle = '#a8a29e'
         ctx.lineWidth = 1.5
         ctx.setLineDash([4, 4])
         ctx.beginPath()
-        // include robot position as the path's start so the dashed line reaches the dot
         ctx.moveTo(xToPx(s.robot.x), yToPx(s.robot.y))
         for (const p of s.path) ctx.lineTo(xToPx(p.x), yToPx(p.y))
         ctx.stroke()
@@ -241,7 +207,6 @@ function Scene2D() {
         ctx.stroke()
       }
 
-      // goal marker — dark red ring + crosshair
       if (s.currentGoal) {
         const gx = xToPx(s.currentGoal.x)
         const gy = yToPx(s.currentGoal.y)
@@ -258,8 +223,6 @@ function Scene2D() {
         ctx.stroke()
       }
 
-      // Draft space perimeter while recording — drawn last so it stays on
-      // top of seeded spaces, walls, and the path, but under the robot.
       if (s.draftSpace && s.draftSpace.points.length > 0) {
         const pts = s.draftSpace.points
         ctx.strokeStyle = 'rgba(249, 115, 22, 0.85)'
@@ -279,14 +242,12 @@ function Scene2D() {
         }
         ctx.stroke()
         ctx.setLineDash([])
-        // vertex dots
         ctx.fillStyle = '#ea580c'
         for (const [pxi, pyi] of pts) {
           ctx.beginPath()
           ctx.arc(xToPx(pxi), yToPx(pyi), 3, 0, Math.PI * 2)
           ctx.fill()
         }
-        // status label at the first point
         ctx.font = 'italic 600 11px "IBM Plex Sans", sans-serif'
         ctx.fillStyle = '#9a3412'
         ctx.textAlign = 'left'
@@ -298,7 +259,6 @@ function Scene2D() {
         )
       }
 
-      // robot — footprint, body, heading wedge
       const robotR = 0.15 * scale
       const rx = xToPx(s.robot.x)
       const ry = yToPx(s.robot.y)
@@ -313,7 +273,6 @@ function Scene2D() {
       ctx.beginPath()
       ctx.arc(rx, ry, robotR * 0.55, 0, Math.PI * 2)
       ctx.fill()
-      // heading: world theta is CCW with y up; canvas y is down so flip the y component.
       const cosT = Math.cos(s.robot.theta)
       const sinT = -Math.sin(s.robot.theta)
       ctx.fillStyle = '#fff'
@@ -326,7 +285,6 @@ function Scene2D() {
       ctx.closePath()
       ctx.fill()
 
-      // origin axes (top-left): +x right, +y up (drawn into the map)
       ctx.strokeStyle = '#0c0a09'
       ctx.lineWidth = 1
       const axOx = ox
@@ -344,7 +302,6 @@ function Scene2D() {
       ctx.fillText('+x', axOx + 18, axOy - 12)
       ctx.fillText('+y', axOx + 2, axOy - 28)
 
-      // 1m scale bar
       const sbY = oy + heightM * scale + 16
       ctx.strokeStyle = '#0c0a09'
       ctx.lineWidth = 1.5
@@ -370,8 +327,6 @@ function Scene2D() {
     return () => cancelAnimationFrame(raf)
   }, [currentMap, decoded, inflated, projection])
 
-  // Translate a mouse event into a world coordinate, or null if it falls
-  // outside the map. Shared by every pointer handler below.
   const eventToWorld = useCallback(
     (e: React.MouseEvent<HTMLCanvasElement>): { wx: number; wy: number } | null => {
       if (!currentMap) return null
@@ -389,10 +344,6 @@ function Scene2D() {
     [currentMap, projection],
   )
 
-  // Edit: write a single cell. Bails out if the value is already what
-  // we'd paint (so a drag over the same cell is idempotent and doesn't
-  // thrash the store) — also lets the caller advance lastCellRef so a
-  // straight drag along one row doesn't keep encoding the same grid.
   const writeCell = useCallback(
     (wx: number, wy: number, value: 0 | 1) => {
       if (!currentMap || !decoded) return
@@ -413,9 +364,6 @@ function Scene2D() {
       const b64 = encodeGrid(next)
       useAppStore.getState().updateMapGridLocal(b64)
 
-      // Debounce save: server PUT batches all strokes from the last
-      // 700 ms into one request so dragging across many cells doesn't
-      // flood the backend.
       if (saveTimerRef.current !== null) {
         window.clearTimeout(saveTimerRef.current)
       }
@@ -431,9 +379,6 @@ function Scene2D() {
     [currentMap, decoded, t],
   )
 
-  // Flush pending save when leaving edit mode, unmounting, or switching
-  // maps — otherwise the last few strokes of a drag could be lost if the
-  // user immediately closes the tab.
   useEffect(() => {
     return () => {
       if (saveTimerRef.current !== null) {
@@ -467,8 +412,6 @@ function Scene2D() {
   }
 
   const onClick = async (e: React.MouseEvent<HTMLCanvasElement>) => {
-    // Edit clicks are handled by mousedown above — skip the navigation /
-    // draft path so a paint stroke doesn't also try to route the robot.
     if (editMode !== 'off') return
     if (!currentMap) return
     const w = eventToWorld(e)
@@ -486,9 +429,6 @@ function Scene2D() {
     }
     if (decoded && decoded[row * currentMap.width_cells + col] === 1) return
 
-    // While drafting a space, a canvas click appends a corner instead of
-    // triggering navigation — operator places vertices precisely without
-    // the robot teleporting between them.
     const draft = useAppStore.getState().draftSpace
     if (draft !== null) {
       useAppStore.getState().appendDraftPoint([wx, wy])

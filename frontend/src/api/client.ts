@@ -32,7 +32,6 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
       const body = (await response.clone().json()) as { detail?: string }
       detail = typeof body.detail === 'string' ? body.detail : undefined
     } catch {
-      // body wasn't JSON; ignore
     }
     const message = `${response.status} ${response.statusText}${detail ? ` — ${detail}` : ''}`
     console.error(`[api] ${init?.method ?? 'GET'} ${url} — ${message}`)
@@ -129,7 +128,6 @@ export function sendVoice(
   fd.append('robot_pos', JSON.stringify(robotPose))
   fd.append('map_id', String(mapId))
   if (voiceMemory) fd.append('voice_memory', JSON.stringify(voiceMemory))
-  // Don't set Content-Type — browser fills in the multipart boundary.
   return request<VoiceResponse>('/api/voice', { method: 'POST', body: fd })
 }
 

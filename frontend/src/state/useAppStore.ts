@@ -21,9 +21,6 @@ export interface ActiveGoal {
   name: string
 }
 
-// Anaphora memory: lets the next voice command refer to "назад" / "ще раз".
-// startedAt is the robot pose at the moment the last NAVIGATE was issued;
-// goal is where that navigation aimed.
 export interface VoiceMemory {
   startedAt: { x: number; y: number; theta: number }
   goal: { x: number; y: number; name: string }
@@ -63,20 +60,9 @@ interface AppState {
   lastTranscription: string
   lastLatencyMs: number | null
   voiceMemory: VoiceMemory | null
-  // Pure rotation target (radians, world frame). When set, KinematicsRunner
-  // lerps theta toward it without translating; cleared on arrival or on
-  // any other motion command.
   targetTheta: number | null
-  // Queued follow-up actions from a multi-step voice command. App.tsx
-  // drains this whenever the robot becomes idle.
   queuedActions: VoiceFollowUp[]
-  // Mid-confidence prediction parked for operator confirmation. While
-  // non-null the CorrectionDialog modal is open. Cleared by setting back
-  // to null on either Yes / No / override.
   pendingCorrection: PendingCorrection | null
-  // Voice-perimeter drafting state. When non-null the user has said
-  // START_SPACE and the robot's pose (or canvas clicks) accumulate into
-  // `points`. Cleared on FINISH_SPACE (after POST) or CANCEL_SPACE.
   draftSpace: { name: string; points: [number, number][] } | null
 
   refreshMaps: () => Promise<MapSummary[]>
@@ -86,9 +72,6 @@ interface AppState {
   setPath: (path: Point2D[], goal?: ActiveGoal | null) => void
   setGoal: (goal: ActiveGoal | null) => void
   stopMovement: () => void
-  // Natural finish of a path. Like stopMovement but keeps queuedActions
-  // intact so a multi-step voice command can continue dispatching the
-  // next frame when the robot becomes idle.
   pathCompleted: () => void
   switchMode: () => void
   setRecording: (v: boolean) => void
@@ -125,8 +108,6 @@ function nowStr(): string {
 }
 
 function polygonCentroid(vertices: [number, number][]): { x: number; y: number } {
-  // Vertex-average centroid — matches the backend's helper, good enough
-  // for spawn placement on roughly convex spaces.
   if (vertices.length === 0) return { x: 0, y: 0 }
   let sx = 0
   let sy = 0
@@ -137,7 +118,7 @@ function polygonCentroid(vertices: [number, number][]): { x: number; y: number }
   return { x: sx / vertices.length, y: sy / vertices.length }
 }
 
-export const useAppStore = create<AppState>((set, get) => ({
+export const useAppStore = create<AppState>()((set, get) => ({
   maps: [],
   currentMap: null,
   spaces: [],
@@ -172,9 +153,6 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   loadMap: async (id) => {
     const [map, spaces] = await Promise.all([getMap(id), listSpaces(id)])
-    // Spawn at the centroid of the home space. If no space is flagged
-    // is_home (shouldn't happen for seeded maps, but be defensive),
-    // fall back to the first space's centroid, then to origin.
     const homeSpace = spaces.find((r) => r.is_home) ?? spaces[0] ?? null
     const spawn = homeSpace ? polygonCentroid(homeSpace.vertices) : { x: 0, y: 0 }
     set({
@@ -198,8 +176,6 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   setPath: (path, goal) =>
     set((s) => {
-      // Drop any waypoint that is non-finite — a bad offset / planner glitch
-      // used to NaN-out the robot pose downstream and crash the 3D scene.
       const safe = path.filter(
         (p) =>
           Number.isFinite(p?.x) &&
@@ -224,16 +200,9 @@ export const useAppStore = create<AppState>((set, get) => ({
       robotV: 0,
       robotW: 0,
       targetTheta: null,
-      // STOP intent must also drop any queued chain — user explicitly
-      // halted, don't keep executing what came before.
       queuedActions: [],
     }),
 
-  // Natural path completion (kinematics reached the last waypoint).
-  // Same as stopMovement except the multi-step action queue is
-  // preserved so the App.tsx watcher can pop the next frame and the
-  // chain continues («поверни ліворуч і вперед на 2 метри» actually
-  // runs the second segment).
   pathCompleted: () =>
     set({
       isMoving: false,
@@ -247,8 +216,6 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   addSpace: (space) =>
     set((s) => {
-      // If the new space is flagged is_home, unset the flag on any other
-      // space locally to mirror the backend's partial-unique invariant.
       const next = space.is_home
         ? s.spaces.map((r) => (r.is_home ? { ...r, is_home: false } : r))
         : s.spaces.slice()
@@ -276,8 +243,6 @@ export const useAppStore = create<AppState>((set, get) => ({
   appendDraftPoint: (pt) =>
     set((s) => {
       if (s.draftSpace === null) return s
-      // De-bounce duplicate / near-duplicate points (0.05 m) — coalesces
-      // static jitter while still picking up real motion.
       const pts = s.draftSpace.points
       if (pts.length > 0) {
         const [lx, ly] = pts[pts.length - 1]
@@ -289,8 +254,6 @@ export const useAppStore = create<AppState>((set, get) => ({
     }),
 
   finishSpaceDraft: () => {
-    // Returns the raw points for the caller (voiceDispatch) to simplify
-    // and POST. We don't clear state here so a failed POST can retry.
     const draft = get().draftSpace
     return draft ? draft.points.slice() : null
   },
@@ -333,8 +296,6 @@ export const useAppStore = create<AppState>((set, get) => ({
   setVoiceMemory: (voiceMemory) => set({ voiceMemory }),
 
   rotateTo: (theta) =>
-    // Pure rotation cancels any in-flight path so the robot doesn't fight
-    // itself. KinematicsRunner picks up targetTheta and lerps to it.
     set({
       targetTheta: theta,
       path: [],
@@ -347,7 +308,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     set((s) => ({ queuedActions: [...s.queuedActions, ...actions] })),
 
   shiftQueuedAction: () => {
-    const q = useAppStore.getState().queuedActions
+    const q = get().queuedActions
     if (q.length === 0) return undefined
     const [next, ...rest] = q
     set({ queuedActions: rest })

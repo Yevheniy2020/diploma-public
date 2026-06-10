@@ -1,19 +1,3 @@
-# Hardware abstraction for the motion layer.
-#
-# The browser simulator keeps the robot's pose client-side; the backend
-# never needs to know where it is. A real robot reverses that: pose
-# arrives over the wire and waypoints flow outward to the device.
-#
-# Both worlds share this interface so the rest of the backend (voice /
-# plan routers) can dispatch a path without caring which one is plugged
-# in. Selection is by `ROBOT_MODE` env var:
-#
-#   ROBOT_MODE=sim   (default) — SimRobotAdapter, no-op for compatibility
-#   ROBOT_MODE=http             — HttpEsp32Adapter, POSTs to ROBOT_URL
-#
-# The HTTP variant is the contract documented in docs/hardware/esp32.md;
-# any device that implements that contract (ESP32, Pi Pico W, custom
-# board) can be swapped in without code changes.
 from __future__ import annotations
 
 import logging
@@ -35,19 +19,11 @@ class RobotStatus:
     mode: str
     connected: bool
     last_pose: Optional[RobotPose]
-    # Seconds since the last pose update from the device. None when no
-    # pose has ever been reported (or in sim mode where the browser owns
-    # the pose).
     age_s: Optional[float]
     last_error: Optional[str]
 
 
 class RobotAdapter(ABC):
-    """Contract every motion backend implements.
-
-    `send_path` is async because the HTTP variant blocks on the device;
-    the sim variant returns immediately.
-    """
 
     mode: str
 
@@ -65,12 +41,6 @@ class RobotAdapter(ABC):
 
 
 class SimRobotAdapter(RobotAdapter):
-    """No-op adapter for the simulator.
-
-    The browser already owns kinematics, so we just record the last
-    pose the frontend sends with each voice call. send_path / stop are
-    intentionally empty — the frontend dispatches waypoints itself.
-    """
 
     mode = "sim"
 
@@ -100,16 +70,6 @@ class SimRobotAdapter(RobotAdapter):
 
 
 class HttpEsp32Adapter(RobotAdapter):
-    """HTTP adapter for an ESP32-class device.
-
-    Sends commands as POSTs to `{robot_url}/cmd`; pose updates from the
-    device arrive at the backend's own /api/robot/pose endpoint and are
-    written here via `update_pose`.
-
-    The device is considered connected when a pose has arrived within
-    the last 3× timeout window — otherwise the backend assumes the WiFi
-    link has dropped.
-    """
 
     mode = "http"
     _STALE_FACTOR = 3.0
@@ -161,7 +121,6 @@ _adapter: Optional[RobotAdapter] = None
 
 
 def init_adapter() -> RobotAdapter:
-    """Build the adapter from settings. Called once on app startup."""
     global _adapter
     if settings.robot_mode == "http":
         if not settings.robot_url:
@@ -176,6 +135,5 @@ def init_adapter() -> RobotAdapter:
 
 def get_adapter() -> RobotAdapter:
     if _adapter is None:
-        # Safety net for tests / direct imports — production goes through init_adapter.
         return init_adapter()
     return _adapter

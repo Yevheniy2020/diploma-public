@@ -1,7 +1,3 @@
-// Single rAF source of truth for robot motion — runs regardless of mode (2D/3D).
-// Uses useAppStore.getState() inside the loop instead of selectors to avoid
-// React re-renders on every tick. Also derives v/ω from pose deltas so the
-// pose panel has live numbers without rewriting kinematics.ts.
 import { useEffect } from 'react'
 import { useAppStore } from '../state/useAppStore'
 import { ANGLE_THRESHOLD, ANGULAR_SPEED, DT_MAX, lerpAngle, stepRobot, wrapAngle } from './kinematics'
@@ -20,8 +16,6 @@ export default function KinematicsRunner() {
       last = now
       const s = useAppStore.getState()
 
-      // Pure-rotation mode (ROTATE intent). Takes priority over path-follow
-      // because rotateTo() clears the path anyway. lerpAngle handles wrap.
       if (s.targetTheta !== null && dt > 0) {
         const before = s.robot
         const safeDt = Math.min(dt, DT_MAX)
@@ -40,9 +34,6 @@ export default function KinematicsRunner() {
       if (s.isMoving && s.path.length > 0 && dt > 0) {
         const before = s.robot
         const res = stepRobot(before, s.path, s.pathIndex, dt)
-        // Guard against NaN/Infinity pose (e.g. malformed waypoint slipped
-        // through). One bad pose used to crash the whole 3D scene because
-        // R3F has no recovery path for non-finite transforms.
         if (
           !Number.isFinite(res.robot.x) ||
           !Number.isFinite(res.robot.y) ||
@@ -60,9 +51,6 @@ export default function KinematicsRunner() {
           if (res.pathIndex !== s.pathIndex) {
             useAppStore.setState({ pathIndex: res.pathIndex })
           }
-          // Voice-perimeter sampling: while drafting a space, append the
-          // robot's pose every ≥0.15 m of motion. The store action
-          // additionally de-bounces 0.05 m duplicates.
           if (s.draftSpace !== null) {
             const pts = s.draftSpace.points
             if (pts.length === 0) {
@@ -77,8 +65,6 @@ export default function KinematicsRunner() {
             }
           }
           if (res.done) {
-            // Natural finish — keep queuedActions so the next chain
-            // frame can dispatch via the App.tsx idle watcher.
             s.pathCompleted()
           }
         }

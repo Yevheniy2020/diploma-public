@@ -22,11 +22,6 @@ class RobotStatusResponse(BaseModel):
 
 @router.post("/pose", status_code=204)
 async def report_pose(pose: RobotPose) -> None:
-    """Endpoint a real robot calls at ~10 Hz to report its odometry.
-
-    For sim mode this is still wired (handy for debugging); the adapter
-    just caches the value.
-    """
     adapter: RobotAdapter = get_adapter()
     adapter.update_pose(pose)
 
@@ -46,6 +41,5 @@ async def status() -> RobotStatusResponse:
 
 @router.post("/stop", status_code=204)
 async def stop() -> None:
-    """E-stop. Forwards a stop command to the device; sim mode is a no-op."""
     adapter = get_adapter()
     await adapter.stop()

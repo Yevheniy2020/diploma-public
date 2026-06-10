@@ -1,5 +1,3 @@
-// World→three mapping: (world.x, 0, world.y) → (three.x, three.y, three.z).
-// Map origin sits at (0,0,0) in three coords; the floor is sized to the map.
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import GoalMarker3D from '../components/GoalMarker3D'

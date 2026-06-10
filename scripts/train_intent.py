@@ -1,21 +1,3 @@
-"""Fine-tune xlm-roberta-base into a JOINT intent + slot model.
-
-Architecture:
-    XLM-RoBERTa backbone → two heads
-        intent head:  Linear over [CLS]                 -> 11 intent classes
-        slot head:    Linear over each token            -> BIO tags (O/B-NAME/I-NAME)
-    loss = CrossEntropy(intent) + CrossEntropy(slot)    (slot head ignores -100 tokens)
-
-Outputs `backend/models/intent_classifier/`:
-    config.json             (HF config + custom keys: num_intents, num_slot_tags)
-    model.safetensors       (joint weights)
-    tokenizer.json + ...
-    label_map.json          (intent name -> id)
-    slot_label_map.json     (BIO tag -> id; presence signals "joint" mode at load)
-
-Usage:
-    cd backend && .venv/bin/python ../scripts/train_intent.py
-"""
 from __future__ import annotations
 
 import argparse
@@ -54,17 +36,12 @@ BASE_MODEL = "xlm-roberta-base"
 MAX_LEN = 64
 SEED = 1337
 
-# BIO scheme. Tiny on purpose — RENAME's old/new are disambiguated by
-# span position in post-processing (first NAME span = old_name).
 SLOT_LABELS = ["O", "B-NAME", "I-NAME"]
 SLOT_TO_ID = {tag: i for i, tag in enumerate(SLOT_LABELS)}
 ID_TO_SLOT = {i: tag for i, tag in enumerate(SLOT_LABELS)}
-IGNORE_INDEX = -100  # special tokens & padding excluded from slot loss
+IGNORE_INDEX = -100
 NAME_SLOT_KEYS = ("name", "old_name", "new_name")
 
-# Boundary head: per-token binary classification. 1 = "this token is the
-# first subword of a chain marker word" (e.g. «і», «потім», «and»).
-# 0 = anything else. IGNORE_INDEX excludes special tokens / padding.
 NUM_BOUNDARY_TAGS = 2
 
 
@@ -87,17 +64,11 @@ def load_jsonl(path: Path) -> list[dict[str, Any]]:
 
 
 def char_spans_for(text: str, slots: dict[str, str]) -> list[tuple[int, int]]:
-    """Return character-level (start, end) spans for every NAME-bearing
-    slot value in `text`, ordered by appearance. RENAME keeps both spans;
-    other intents have one. Returns [] if any slot value is missing."""
     if not slots:
         return []
     t = text.lower()
     spans: list[tuple[int, int]] = []
     cursor = 0
-    # Order: old_name → new_name → name. We require RENAME's two spans
-    # to appear in that order (already enforced upstream by the dataset
-    # generator). For single-name intents, just find the first match.
     keys_in_order = [k for k in ("old_name", "new_name", "name") if k in slots]
     for k in keys_in_order:
         v = str(slots[k]).lower().strip()
@@ -115,8 +86,6 @@ def build_token_labels(
     offsets: list[tuple[int, int]],
     char_spans: list[tuple[int, int]],
 ) -> list[int]:
-    """Translate char-level spans into BIO token labels using HF's
-    offset_mapping. Special tokens (offset (0,0)) get IGNORE_INDEX."""
     labels: list[int] = []
     for start, end in offsets:
         if start == 0 and end == 0:
@@ -125,7 +94,6 @@ def build_token_labels(
         in_span = False
         is_first = False
         for s_start, s_end in char_spans:
-            # Token belongs to span if its char range sits inside the span.
             if start >= s_start and end <= s_end and start < s_end:
                 in_span = True
                 is_first = (start == s_start)
@@ -141,20 +109,12 @@ def build_boundary_labels(
     offsets: list[tuple[int, int]],
     marker_offsets: list[int],
 ) -> list[int]:
-    """Per-token boundary labels. Returns a list of NUM_BOUNDARY_TAGS
-    indices: 0 for "normal token", 1 for "first subword of a chain
-    marker word at char position in `marker_offsets`", IGNORE_INDEX for
-    special tokens (offset (0,0))."""
     labels: list[int] = []
     marker_set = set(marker_offsets)
     for start, end in offsets:
         if start == 0 and end == 0:
             labels.append(IGNORE_INDEX)
             continue
-        # The boundary fires only on the subword that BEGINS at the
-        # marker's char position. Subsequent subwords of the same word
-        # are kept at class 0 — the model only needs to spot the
-        # leading marker subword to split correctly.
         labels.append(1 if start in marker_set else 0)
     return labels
 
@@ -191,9 +151,6 @@ class JointDataset(Dataset):  # type: ignore[type-arg]
         offsets = enc.pop("offset_mapping")[0].tolist()
         attn = enc["attention_mask"][0].tolist()
 
-        # Slot labels: ignored for chain rows (the [CLS] mixes both
-        # segments — we don't want the slot head to commit). For single-
-        # intent rows, BIO over the row's slot values as before.
         if is_chain:
             slot_labels = [IGNORE_INDEX] * len(offsets)
         else:
@@ -204,16 +161,11 @@ class JointDataset(Dataset):  # type: ignore[type-arg]
                 for a, lbl in zip(attn, slot_labels)
             ]
 
-        # Intent label: same reasoning — chain rows skip intent loss.
-        # PyTorch CE's default ignore_index is -100, so this just works.
         if is_chain:
             intent_label = IGNORE_INDEX
         else:
             intent_label = self.intent_to_id[row["intent"]]
 
-        # Boundary labels: 0 for normal content tokens, 1 on the first
-        # subword of every chain marker word, IGNORE_INDEX on special /
-        # padding tokens. Single-intent rows train the head to NOT fire.
         marker_offsets: list[int] = list(row.get("chain_markers") or [])
         boundary_labels = build_boundary_labels(offsets, marker_offsets)
         boundary_labels = [
@@ -231,15 +183,6 @@ class JointDataset(Dataset):  # type: ignore[type-arg]
 
 
 class XLMRobertaForIntentSlot(XLMRobertaPreTrainedModel):
-    """XLM-RoBERTa with three heads: [CLS]-pooled intent classifier,
-    per-token BIO slot tagger, and per-token chain-marker boundary
-    classifier. Forward returns the three logits tensors; total loss is
-    the sum of three independent CE terms when all labels are supplied.
-
-    The intent and slot heads use `ignore_index=IGNORE_INDEX` so chain
-    rows (which set those labels to IGNORE_INDEX wholesale) don't
-    pollute their gradients. The boundary head trains on every row —
-    single-intent rows teach it to NOT fire."""
 
     def __init__(
         self,
@@ -258,8 +201,6 @@ class XLMRobertaForIntentSlot(XLMRobertaPreTrainedModel):
         self.intent_classifier = nn.Linear(config.hidden_size, num_intents)
         self.slot_classifier = nn.Linear(config.hidden_size, num_slot_tags)
         self.boundary_classifier = nn.Linear(config.hidden_size, num_boundary_tags)
-        # Persist the head sizes inside the HF config so they survive
-        # save/load round-trip.
         config.num_intents = num_intents
         config.num_slot_tags = num_slot_tags
         config.num_boundary_tags = num_boundary_tags
@@ -313,8 +254,6 @@ def compute_metrics(eval_pred):  # type: ignore[no-untyped-def]
         intent_labels, slot_labels, boundary_labels
     ) = eval_pred
 
-    # Intent accuracy + macro-F1 — ignore rows whose label is IGNORE_INDEX
-    # (chain rows opt out of intent supervision).
     intent_pred = np.argmax(intent_logits, axis=-1)
     intent_mask = intent_labels != IGNORE_INDEX
     in_pred = intent_pred[intent_mask]
@@ -335,7 +274,6 @@ def compute_metrics(eval_pred):  # type: ignore[no-untyped-def]
             f1s.append(2 * prec * rec / (prec + rec) if (prec + rec) else 0.0)
         intent_f1 = float(np.mean(f1s))
 
-    # Token-level macro F1 for slots, ignoring IGNORE_INDEX.
     slot_pred = np.argmax(slot_logits, axis=-1)
     mask = slot_labels != IGNORE_INDEX
     sl_pred = slot_pred[mask]
@@ -353,10 +291,6 @@ def compute_metrics(eval_pred):  # type: ignore[no-untyped-def]
             f1s2.append(2 * prec * rec / (prec + rec) if (prec + rec) else 0.0)
         slot_f1 = float(np.mean(f1s2))
 
-    # Boundary head: token-level binary F1 (class 1 = "is marker"). We
-    # report P / R / F1 for the positive class explicitly because the
-    # negative class dominates the corpus and macro-F1 would hide a
-    # collapse of the head to "always predict 0".
     bd_pred = np.argmax(boundary_logits, axis=-1)
     bd_mask = boundary_labels != IGNORE_INDEX
     bd_pred_m = bd_pred[bd_mask]
@@ -447,7 +381,6 @@ def main() -> None:
         report_to=[],
         seed=SEED,
         fp16=device == "cuda",
-        # Custom forward returns dict — keep tensors aligned
         label_names=["intent_labels", "slot_labels", "boundary_labels"],
     )
 

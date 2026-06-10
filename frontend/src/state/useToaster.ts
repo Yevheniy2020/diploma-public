@@ -17,7 +17,7 @@ interface ToasterState {
 let _seq = 0
 const DEFAULT_TTL_MS = 3000
 
-export const useToaster = create<ToasterState>((set, get) => ({
+export const useToaster = create<ToasterState>()((set, get) => ({
   toasts: [],
   push: (kind, message) => {
     const id = ++_seq
@@ -28,8 +28,6 @@ export const useToaster = create<ToasterState>((set, get) => ({
     set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })),
 }))
 
-// Standalone helpers so non-React code (dispatchers, async handlers)
-// can publish toasts without subscribing to the hook.
 export const toast = {
   info: (m: string) => useToaster.getState().push('info', m),
   success: (m: string) => useToaster.getState().push('success', m),

@@ -1,26 +1,3 @@
-"""Augment hand-written seeds with paraphrases from Groq, then write
-intents.jsonl + intents_eval.jsonl for fine-tuning a joint intent + slot
-model.
-
-Usage (from repo root):
-    cd backend && .venv/bin/python ../scripts/generate_dataset.py
-
-Env: GROQ_API_KEY must be set (read from backend/.env via config.py).
-
-Pipeline:
-    1. Read scripts/data/seeds.jsonl. Label-CRUD rows carry a `slots`
-       field whose values are literal substrings of `text`.
-    2. For each seed, ask Groq for N paraphrases — prompt explicitly
-       requires the label name(s) to appear *verbatim*.
-    3. Auto-annotate each paraphrase: locate every slot value as
-       case-insensitive substring; drop the paraphrase if any slot value
-       is missing or, for RENAME, if old_name no longer precedes new_name.
-    4. Stratified 90/10 split → intents.jsonl + intents_eval.jsonl.
-
-Output schema per JSONL row:
-    {"text": "переназви кухню на їдальня", "intent": "RENAME_LABEL",
-     "lang": "uk", "slots": {"old_name": "кухню", "new_name": "їдальня"}}
-"""
 from __future__ import annotations
 
 import argparse
@@ -53,21 +30,12 @@ DB_PATH = ROOT / "backend" / "db.sqlite3"
 
 PARAPHRASE_MODEL = "meta-llama/llama-4-scout-17b-16e-instruct"
 DEFAULT_PARAPHRASES_PER_SEED = 8
-DEFAULT_CONCURRENCY = 2  # Groq free tier: 30 RPM on llama-4-scout
+DEFAULT_CONCURRENCY = 2
 EVAL_FRACTION = 0.10
 RNG_SEED = 1337
 
-# Slot keys whose values must appear verbatim in the paraphrase. RADIUS
-# is excluded — wording varies wildly («пів метра / 0.8 / half a meter»)
-# and the regex slot extractor handles it; the model sees these tokens
-# as O during training.
 NAME_SLOT_KEYS = {"name", "old_name", "new_name"}
 
-# Lexical signals that must survive paraphrasing for an intent to remain
-# itself. Without this guard, the LLM occasionally produces a paraphrase
-# that keeps the label name verbatim but drops the action verb, so the
-# row ends up labelled DELETE_LABEL while the text actually expresses
-# NAVIGATE / CREATE / nothing. We require at least one regex hit per row.
 _INTENT_SIGNALS: dict[str, re.Pattern[str]] = {
     "DELETE_SPACE": re.compile(
         r"\b(?:видал|забер|прибер|позбу|забира|вилуч|delete|remove|"
@@ -105,9 +73,6 @@ _INTENT_SIGNALS: dict[str, re.Pattern[str]] = {
 
 
 def intent_signal_present(text: str, intent: str) -> bool:
-    """For label-CRUD intents that also share a label name, verify the
-    paraphrase still carries an intent-discriminating verb. Returns
-    True for intents we don't gate (NAVIGATE, ROTATE, etc.)."""
     pattern = _INTENT_SIGNALS.get(intent)
     if pattern is None:
         return True
@@ -163,8 +128,6 @@ def load_seeds(path: Path) -> list[dict[str, Any]]:
 
 
 def load_command_log(db_path: Path) -> list[dict[str, Any]]:
-    """Pull (transcription, intent) from command_log. No slots — these
-    rows train intent only; slot heads see them as all-O."""
     if not db_path.exists():
         log.warning("db.sqlite3 not found at %s — skipping command_log enrichment", db_path)
         return []
@@ -188,9 +151,6 @@ def normalize(text: str) -> str:
 
 
 def slots_present_in(text: str, slots: dict[str, str]) -> bool:
-    """Verify every name-bearing slot value appears as a substring of
-    `text` (case-insensitive). Returns False if any value is missing.
-    For RENAME, also enforce that old_name appears before new_name."""
     if not slots:
         return True
     t = text.lower()
@@ -234,7 +194,7 @@ async def paraphrase_one(
                 raw = resp.choices[0].message.content or ""
                 lines = [ln.strip().strip("\"'`–-—•*").strip() for ln in raw.splitlines()]
                 lines = [ln for ln in lines if ln and len(ln) <= 200]
-                await asyncio.sleep(4.0)  # Self-throttle to fit 30 RPM
+                await asyncio.sleep(4.0)
                 return lines[:n]
             except Exception as exc:  # noqa: BLE001
                 wait = min(30, 2 ** (attempt + 1))
@@ -251,7 +211,7 @@ async def expand(
 ) -> tuple[list[dict[str, Any]], dict[str, int]]:
     client = AsyncGroq(api_key=settings.groq_api_key)
     sem = asyncio.Semaphore(concurrency)
-    results: list[dict[str, Any]] = list(seeds)  # always keep originals
+    results: list[dict[str, Any]] = list(seeds)
     drop_stats: dict[str, int] = defaultdict(int)
 
     async def task(seed: dict[str, Any]) -> list[dict[str, Any]]:
@@ -300,20 +260,13 @@ def deduplicate(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return list(seen.values())
 
 
-# ---------------------------------------------------------------------------
-# Chain row synthesis
-# ---------------------------------------------------------------------------
-
-# (full marker text, byte-offset within the marker where the FIRST marker
-# word starts). The boundary head is trained to fire on the first subword
-# of this word. We pick from this list uniformly at random per chain.
 _UK_CHAIN_MARKERS: list[tuple[str, int]] = [
     (" і ", 1),
     (" та ", 1),
     (" потім ", 1),
     (", потім ", 2),
-    (", а потім ", 2),   # comma + filler «а» + потім
-    (", а далі ", 2),    # comma + filler «а» + далі
+    (", а потім ", 2),
+    (", а далі ", 2),
     (" і далі ", 1),
     (" після цього ", 1),
     (" після того ", 1),
@@ -328,45 +281,33 @@ _EN_CHAIN_MARKERS: list[tuple[str, int]] = [
     (", then ", 2),
 ]
 
-# Optional leading interjection prepended to ~25 % of synthesized chain
-# rows. Teaches the model to tolerate filler words («А йди ... »,
-# «Ну рухайся ... »). Stored as plain strings to prepend; we re-uppercase
-# the first letter to match natural sentence-cased transcripts.
 _UK_LEADING_INTERJECTIONS: list[str] = ["А ", "Ну ", "Ой ", "От ", "Так "]
 
-# Intent combos for synthesized chains. Weighted by what's actually useful
-# in practice — ROTATE+DRIVE dominates because that's the canonical demo
-# («поверни ліворуч і вперед на 2 метри»).
 _CHAIN_COMBOS_TWO: list[tuple[float, tuple[str, str]]] = [
     (0.50, ("ROTATE", "DRIVE_RELATIVE")),
     (0.15, ("DRIVE_RELATIVE", "NAVIGATE")),
     (0.10, ("NAVIGATE", "STOP")),
-    (0.10, ("NAVIGATE", "NAVIGATE")),   # «йди до бета а потім до альфа»
+    (0.10, ("NAVIGATE", "NAVIGATE")),
     (0.05, ("ROTATE", "NAVIGATE")),
-    (0.05, ("DRIVE_RELATIVE", "ROTATE")),  # «вперед і поверни ліворуч»
+    (0.05, ("DRIVE_RELATIVE", "ROTATE")),
     (0.05, ("NAVIGATE", "RETURN_HOME")),
 ]
 _CHAIN_COMBO_THREE: tuple[str, str, str] = ("ROTATE", "DRIVE_RELATIVE", "NAVIGATE")
-_FRACTION_THREE_STEP = 0.05  # 5 % of chain rows are 3-step
+_FRACTION_THREE_STEP = 0.05
 
 _CHAIN_USEFUL_INTENTS = {"NAVIGATE", "DRIVE_RELATIVE", "ROTATE", "STOP", "RETURN_HOME"}
 
 
 def _detect_lang(text: str) -> str:
-    """Cheap language sniff: any Cyrillic letter wins."""
     t = text.lower()
     return "uk" if any("а" <= ch <= "я" or ch in "іїєґ" for ch in t) else "en"
 
 
 def _strip_tail_punct(text: str) -> str:
-    """Drop trailing punctuation so chained text doesn't double up
-    separators."""
     return text.rstrip(" .,!?:;")
 
 
 def _lower_first(text: str) -> str:
-    """Lowercase only the first letter so the chained part reads as a
-    continuation, not a new sentence."""
     return text[:1].lower() + text[1:] if text else text
 
 
@@ -386,22 +327,12 @@ def _pick_combo(rng: random.Random) -> tuple[str, str]:
 
 
 def _segment_payload(row: dict[str, Any]) -> dict[str, Any]:
-    """Ground-truth (intent, slots) for one segment, used by eval. Slots
-    default to {} when the source row doesn't carry them."""
     return {"intent": row["intent"], "slots": dict(row.get("slots") or {})}
 
 
 def synthesize_chains(
     rows: list[dict[str, Any]], n: int, rng: random.Random
 ) -> list[dict[str, Any]]:
-    """Pair single-intent rows into multi-step chain rows.
-
-    The returned rows carry an extra `segments` list with per-step
-    ground truth, plus a `chain_markers` list of char offsets pointing
-    at the first letter of each marker word in `text`. The top-level
-    `intent` is set to the FIRST segment's intent so `stratified_split`
-    and `deduplicate` continue to work; training-time code recognises
-    chain rows by `segments` and ignores intent/slot loss for them."""
     if n <= 0:
         return []
     pool: dict[str, dict[str, list[dict[str, Any]]]] = defaultdict(lambda: defaultdict(list))
@@ -409,7 +340,6 @@ def synthesize_chains(
         if r["intent"] not in _CHAIN_USEFUL_INTENTS:
             continue
         if r.get("segments"):
-            # already a chain row — skip re-chaining
             continue
         pool[r.get("lang", "uk")][r["intent"]].append(r)
 
@@ -432,19 +362,14 @@ def synthesize_chains(
             parts.append(rng.choice(bucket))
         if not parts:
             continue
-        # Optional leading interjection (~25 % of UK chains). Shifts all
-        # marker offsets right by len(prefix). Teaches the boundary head
-        # not to over-anchor on text starting with an action verb.
         prefix = ""
         if lang == "uk" and rng.random() < 0.25:
             prefix = rng.choice(_UK_LEADING_INTERJECTIONS)
-            # «А йди» reads more naturally with lowercase action verb.
             parts = [
                 {**parts[0], "text": _lower_first(parts[0]["text"])},
                 *parts[1:],
             ]
 
-        # Stitch text + record marker offsets.
         text = prefix + _strip_tail_punct(parts[0]["text"])
         markers: list[int] = []
         for nxt in parts[1:]:
@@ -454,7 +379,7 @@ def synthesize_chains(
         segments = [_segment_payload(p) for p in parts]
         out.append({
             "text": text,
-            "intent": segments[0]["intent"],  # for stratified_split bucketing only
+            "intent": segments[0]["intent"],
             "lang": lang,
             "segments": segments,
             "chain_markers": markers,
@@ -487,7 +412,6 @@ def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
 
 
 def append_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
-    """Append-only sibling of write_jsonl. Creates the file if missing."""
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as f:
         for r in rows:
@@ -538,10 +462,6 @@ async def main() -> None:
 
     rng = random.Random(RNG_SEED)
 
-    # Append mode: only the operator's brand-new corrections get
-    # paraphrased; everything we've already trained on stays in
-    # intents.jsonl untouched. Saves ~6 minutes and ~125k Groq tokens
-    # on every retrain after the first.
     append_mode = (
         args.append_from is not None
         and args.append_from.exists()
@@ -559,8 +479,6 @@ async def main() -> None:
         seeds = load_seeds(SEEDS_PATH)
         log.info("loaded %d hand-written seeds (%d carry slots)",
                  len(seeds), sum(1 for s in seeds if s.get("slots")))
-        # Active-learning seeds collected by retrain_from_feedback.py from
-        # operator-confirmed corrections. Optional file; absent on first run.
         if FEEDBACK_SEEDS_PATH.exists():
             feedback = load_seeds(FEEDBACK_SEEDS_PATH)
             log.info("loaded %d feedback seeds", len(feedback))

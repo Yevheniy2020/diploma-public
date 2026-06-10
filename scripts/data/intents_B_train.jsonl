@@ -1,0 +1,179 @@
+{"text": "як справи", "intent": "UNKNOWN", "lang": "uk"}
+{"text": "tell me a joke", "intent": "UNKNOWN", "lang": "en"}
+{"text": "Крутись.", "intent": "ROTATE", "lang": "uk"}
+{"text": "до кухні", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "rename corridor to hallway", "intent": "RENAME_SPACE", "lang": "en", "slots": {"old_name": "corridor", "new_name": "hallway"}}
+{"text": "розвернись на 180 градусів", "intent": "ROTATE", "lang": "uk"}
+{"text": "скасуйте", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "проїдь 50 сантиметрів вперед", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "хм", "intent": "UNKNOWN", "lang": "uk"}
+{"text": "зміни ім'я лейбла балкон на тераса", "intent": "RENAME_SPACE", "lang": "uk", "slots": {"old_name": "балкон", "new_name": "тераса"}}
+{"text": "новий полігон ванна", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "ванна"}}
+{"text": "return to base", "intent": "RETURN_HOME", "lang": "en"}
+{"text": "change the name of corridor to hallway", "intent": "RENAME_SPACE", "lang": "en", "slots": {"old_name": "corridor", "new_name": "hallway"}}
+{"text": "rotate ninety degrees right", "intent": "ROTATE", "lang": "en"}
+{"text": "thanks", "intent": "UNKNOWN", "lang": "en"}
+{"text": "відмінити малювання", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "завершуй", "intent": "FINISH_SPACE", "lang": "uk"}
+{"text": "rename point 1 to start", "intent": "RENAME_SPACE", "lang": "en", "slots": {"old_name": "point 1", "new_name": "start"}}
+{"text": "start room bedroom", "intent": "START_SPACE", "lang": "en", "slots": {"name": "bedroom"}}
+{"text": "повернись ліворуч", "intent": "ROTATE", "lang": "uk"}
+{"text": "drive backwards 1.5 meters", "intent": "DRIVE_RELATIVE", "lang": "en"}
+{"text": "видали мітку їдальня 2", "intent": "DELETE_SPACE", "lang": "uk", "slots": {"name": "їдальня 2"}}
+{"text": "піди туди де я готую", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "зберегти", "intent": "FINISH_SPACE", "lang": "uk"}
+{"text": "go to the corridor please", "intent": "NAVIGATE", "lang": "en"}
+{"text": "збережено", "intent": "FINISH_SPACE", "lang": "uk"}
+{"text": "лейбл спальня тепер хай буде кімната", "intent": "RENAME_SPACE", "lang": "uk", "slots": {"old_name": "спальня", "new_name": "кімната"}}
+{"text": "rename base to start", "intent": "RENAME_SPACE", "lang": "en", "slots": {"old_name": "base", "new_name": "start"}}
+{"text": "відмініть", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "зміщайся вправо", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "припини рух", "intent": "STOP", "lang": "uk"}
+{"text": "пройди до балкону", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "Прямо и до кимната.", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "rename the kitchen marker to dining", "intent": "RENAME_SPACE", "lang": "en", "slots": {"old_name": "kitchen", "new_name": "dining"}}
+{"text": "hmm okay", "intent": "UNKNOWN", "lang": "en"}
+{"text": "перейменуй коридор на хол", "intent": "RENAME_SPACE", "lang": "uk", "slots": {"old_name": "коридор", "new_name": "хол"}}
+{"text": "позбудься мітки балкон", "intent": "DELETE_SPACE", "lang": "uk", "slots": {"name": "балкон"}}
+{"text": "stop", "intent": "STOP", "lang": "en"}
+{"text": "freeze", "intent": "STOP", "lang": "en"}
+{"text": "Прямой до едальни.", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "what can you do", "intent": "UNKNOWN", "lang": "en"}
+{"text": "прибери мітку база", "intent": "DELETE_SPACE", "lang": "uk", "slots": {"name": "база"}}
+{"text": "нова кімната вітальня", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "вітальня"}}
+{"text": "draw room hallway", "intent": "START_SPACE", "lang": "en", "slots": {"name": "hallway"}}
+{"text": "стій на місці", "intent": "STOP", "lang": "uk"}
+{"text": "готово збережи", "intent": "FINISH_SPACE", "lang": "uk"}
+{"text": "зупинись", "intent": "STOP", "lang": "uk"}
+{"text": "hold position", "intent": "STOP", "lang": "en"}
+{"text": "what time is it", "intent": "UNKNOWN", "lang": "en"}
+{"text": "пауза", "intent": "STOP", "lang": "uk"}
+{"text": "чотири рази по метру вперед", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "remove balcony tag", "intent": "DELETE_SPACE", "lang": "en", "slots": {"name": "balcony"}}
+{"text": "завершено", "intent": "FINISH_SPACE", "lang": "uk"}
+{"text": "стоп, негайно", "intent": "STOP", "lang": "uk"}
+{"text": "переназви кухню на їдальня", "intent": "RENAME_SPACE", "lang": "uk", "slots": {"old_name": "кухню", "new_name": "їдальня"}}
+{"text": "обведи кімнату будуар", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "будуар"}}
+{"text": "стартую кімнату веранда", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "веранда"}}
+{"text": "повернись три рази ліворуч", "intent": "ROTATE", "lang": "uk"}
+{"text": "remove the marker corridor", "intent": "DELETE_SPACE", "lang": "en", "slots": {"name": "corridor"}}
+{"text": "ліворуч на пів метра", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "що ти вмієш", "intent": "UNKNOWN", "lang": "uk"}
+{"text": "change cabinet 2 to office", "intent": "RENAME_SPACE", "lang": "en", "slots": {"old_name": "cabinet 2", "new_name": "office"}}
+{"text": "turn left", "intent": "ROTATE", "lang": "en"}
+{"text": "new room pantry", "intent": "START_SPACE", "lang": "en", "slots": {"name": "pantry"}}
+{"text": "видали кабінет 2", "intent": "DELETE_SPACE", "lang": "uk", "slots": {"name": "кабінет 2"}}
+{"text": "розвернись", "intent": "ROTATE", "lang": "uk"}
+{"text": "go home", "intent": "RETURN_HOME", "lang": "en"}
+{"text": "поверни додому", "intent": "RETURN_HOME", "lang": "uk"}
+{"text": "go to where I sleep", "intent": "NAVIGATE", "lang": "en"}
+{"text": "забери лейбл коридор", "intent": "DELETE_SPACE", "lang": "uk", "slots": {"name": "коридор"}}
+{"text": "хай спальня буде кімната", "intent": "RENAME_SPACE", "lang": "uk", "slots": {"old_name": "спальня", "new_name": "кімната"}}
+{"text": "head to the balcony", "intent": "NAVIGATE", "lang": "en"}
+{"text": "відмінити", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "готово", "intent": "FINISH_SPACE", "lang": "uk"}
+{"text": "завершуй кімнату", "intent": "FINISH_SPACE", "lang": "uk"}
+{"text": "turn 45 degrees left", "intent": "ROTATE", "lang": "en"}
+{"text": "скасуй чернетку", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "стартуй кімнату гараж", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "гараж"}}
+{"text": "скасуй", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "ти мене чуєш", "intent": "UNKNOWN", "lang": "uk"}
+{"text": "зміни ім'я мітки кабінет 2 на офіс", "intent": "RENAME_SPACE", "lang": "uk", "slots": {"old_name": "кабінет 2", "new_name": "офіс"}}
+{"text": "рухайся в коридор", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "зберегти кімнату", "intent": "FINISH_SPACE", "lang": "uk"}
+{"text": "відміни кімнату", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "turn 180 degrees", "intent": "ROTATE", "lang": "en"}
+{"text": "скасувати кімнату", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "завершити", "intent": "FINISH_SPACE", "lang": "uk"}
+{"text": "ееее", "intent": "UNKNOWN", "lang": "uk"}
+{"text": "ну так", "intent": "UNKNOWN", "lang": "uk"}
+{"text": "зміни назву кабінет 2 на офіс", "intent": "RENAME_SPACE", "lang": "uk", "slots": {"old_name": "кабінет 2", "new_name": "офіс"}}
+{"text": "move to point 1", "intent": "NAVIGATE", "lang": "en"}
+{"text": "shift slightly right", "intent": "DRIVE_RELATIVE", "lang": "en"}
+{"text": "delete the label kitchen", "intent": "DELETE_SPACE", "lang": "en", "slots": {"name": "kitchen"}}
+{"text": "видали мітку кухня", "intent": "DELETE_SPACE", "lang": "uk", "slots": {"name": "кухня"}}
+{"text": "рухайся вперед", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "розкажи анекдот", "intent": "UNKNOWN", "lang": "uk"}
+{"text": "go back to base", "intent": "RETURN_HOME", "lang": "en"}
+{"text": "Прямо и до кимнаты.", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "back to start", "intent": "RETURN_HOME", "lang": "en"}
+{"text": "delete point 1", "intent": "DELETE_SPACE", "lang": "en", "slots": {"name": "point 1"}}
+{"text": "drive one meter south of the kitchen", "intent": "NAVIGATE", "lang": "en"}
+{"text": "вперед на три метри", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "let the base label be called start", "intent": "RENAME_SPACE", "lang": "en", "slots": {"old_name": "base", "new_name": "start"}}
+{"text": "стань на півметра нижче балкона", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "почни малювати кімнату мансарда", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "мансарда"}}
+{"text": "поверни на 45 градусів ліворуч", "intent": "ROTATE", "lang": "uk"}
+{"text": "видали точку 1", "intent": "DELETE_SPACE", "lang": "uk", "slots": {"name": "точку 1"}}
+{"text": "drive forward two meters", "intent": "DRIVE_RELATIVE", "lang": "en"}
+{"text": "поверни ще раз праворуч", "intent": "ROTATE", "lang": "uk"}
+{"text": "поїдь на точку 1", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "переіменувати балкон 2 на кабінет", "intent": "RENAME_SPACE", "lang": "uk", "slots": {"old_name": "балкон 2", "new_name": "кабінет"}}
+{"text": "перейменуй базу на старт", "intent": "RENAME_SPACE", "lang": "uk", "slots": {"old_name": "базу", "new_name": "старт"}}
+{"text": "повертайся в стартову точку", "intent": "RETURN_HOME", "lang": "uk"}
+{"text": "Go to the kitchen.", "intent": "NAVIGATE", "lang": "en"}
+{"text": "повертайся на старт", "intent": "RETURN_HOME", "lang": "uk"}
+{"text": "drive to the bedroom", "intent": "NAVIGATE", "lang": "en"}
+{"text": "go back one meter", "intent": "DRIVE_RELATIVE", "lang": "en"}
+{"text": "rename kitchen to dining room", "intent": "RENAME_SPACE", "lang": "en", "slots": {"old_name": "kitchen", "new_name": "dining room"}}
+{"text": "малювати кімнату ванна", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "ванна"}}
+{"text": "rotate counterclockwise", "intent": "ROTATE", "lang": "en"}
+{"text": "відміни малювання", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "стоп", "intent": "STOP", "lang": "uk"}
+{"text": "двічі праворуч", "intent": "ROTATE", "lang": "uk"}
+{"text": "повернись на 90 градусів вправо", "intent": "ROTATE", "lang": "uk"}
+{"text": "stop now", "intent": "STOP", "lang": "en"}
+{"text": "make the bedroom label called room", "intent": "RENAME_SPACE", "lang": "en", "slots": {"old_name": "bedroom", "new_name": "room"}}
+{"text": "трохи направо", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "halt", "intent": "STOP", "lang": "en"}
+{"text": "поверни на південь від кухні на метр", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "поверни праворуч", "intent": "ROTATE", "lang": "uk"}
+{"text": "малюй кімнату тераса", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "тераса"}}
+{"text": "доброго ранку", "intent": "UNKNOWN", "lang": "uk"}
+{"text": "почни кімнату майстерня", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "майстерня"}}
+{"text": "пройди один метр назад", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "розвернись на пів оберта", "intent": "ROTATE", "lang": "uk"}
+{"text": "проїдь два метри вперед", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "завершити кімнату", "intent": "FINISH_SPACE", "lang": "uk"}
+{"text": "зміни найменування балкон на тераса", "intent": "RENAME_SPACE", "lang": "uk", "slots": {"old_name": "балкон", "new_name": "тераса"}}
+{"text": "їдь на кухню", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "закінчити", "intent": "FINISH_SPACE", "lang": "uk"}
+{"text": "turn left twice", "intent": "ROTATE", "lang": "en"}
+{"text": "відмінити кімнату", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "переназви позначку база у старт", "intent": "RENAME_SPACE", "lang": "uk", "slots": {"old_name": "база", "new_name": "старт"}}
+{"text": "stop moving", "intent": "STOP", "lang": "en"}
+{"text": "піди до спальні", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "хай мітка коридор називається холл", "intent": "RENAME_SPACE", "lang": "uk", "slots": {"old_name": "коридор", "new_name": "холл"}}
+{"text": "перейменувати їдальня 2 на кухня", "intent": "RENAME_SPACE", "lang": "uk", "slots": {"old_name": "їдальня 2", "new_name": "кухня"}}
+{"text": "зупинись зараз", "intent": "STOP", "lang": "uk"}
+{"text": "повернись додому", "intent": "RETURN_HOME", "lang": "uk"}
+{"text": "додому", "intent": "RETURN_HOME", "lang": "uk"}
+{"text": "відправ на балкон", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "повернись наліво", "intent": "ROTATE", "lang": "uk"}
+{"text": "rotate clockwise three times", "intent": "ROTATE", "lang": "en"}
+{"text": "Крутись!", "intent": "ROTATE", "lang": "uk"}
+{"text": "обернись на чверть оберта", "intent": "ROTATE", "lang": "uk"}
+{"text": "turn right", "intent": "ROTATE", "lang": "en"}
+{"text": "відправ на точку 2 будь ласка", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "на базу", "intent": "RETURN_HOME", "lang": "uk"}
+{"text": "how are you", "intent": "UNKNOWN", "lang": "en"}
+{"text": "закінчити кімнату", "intent": "FINISH_SPACE", "lang": "uk"}
+{"text": "їдь у вітальню", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "return home", "intent": "RETURN_HOME", "lang": "en"}
+{"text": "move forward", "intent": "DRIVE_RELATIVE", "lang": "en"}
+{"text": "здай назад", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "поверни в кабінет 2", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "the label balcony should be called terrace", "intent": "RENAME_SPACE", "lang": "en", "slots": {"old_name": "balcony", "new_name": "terrace"}}
+{"text": "спасибі", "intent": "UNKNOWN", "lang": "uk"}
+{"text": "begin room office", "intent": "START_SPACE", "lang": "en", "slots": {"name": "office"}}
+{"text": "скасуй малювання", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "Рухайся нащукімноти.", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "закінчили", "intent": "FINISH_SPACE", "lang": "uk"}
+{"text": "start drawing room basement", "intent": "START_SPACE", "lang": "en", "slots": {"name": "basement"}}
+{"text": "good morning", "intent": "UNKNOWN", "lang": "en"}
+{"text": "трохи вперед", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "скасуй кімнату", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "скасуй периметр", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "поїдь півтора метри назад", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "обводи кімнату мансарда", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "мансарда"}}
+{"text": "get rid of the bedroom label", "intent": "DELETE_SPACE", "lang": "en", "slots": {"name": "bedroom"}}

@@ -1,6 +1,3 @@
-// Hotkey-only debug helpers — no UI.
-// Arrows = manual move/turn, S = stop, R = reset to (0,0,0).
-// Space is reserved for push-to-talk (VoiceButton owns it).
 import { useEffect } from 'react'
 import { useAppStore } from '../state/useAppStore'
 

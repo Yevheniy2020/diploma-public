@@ -1,4 +1,3 @@
-// A small dark-red torus on the floor at the active goal position.
 import { useAppStore } from '../state/useAppStore'
 
 export default function GoalMarker3D() {

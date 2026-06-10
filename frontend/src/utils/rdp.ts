@@ -1,10 +1,3 @@
-// Ramer–Douglas–Peucker polyline simplification.
-//
-// Given a sequence of (x, y) points and a tolerance ε (metres), drop any
-// point closer than ε to the line connecting the points that flank it.
-// Standard recursive formulation. For voice-perimeter drafting this trims
-// dense pose-sampled tracks to a handful of corners before persisting.
-
 type Pt = [number, number]
 
 function perpendicularDistance(p: Pt, a: Pt, b: Pt): number {
@@ -19,7 +12,6 @@ function perpendicularDistance(p: Pt, a: Pt, b: Pt): number {
     const ey = py - ay
     return Math.hypot(ex, ey)
   }
-  // |(b - a) × (a - p)| / |b - a|
   const cross = dx * (ay - py) - dy * (ax - px)
   return Math.abs(cross) / Math.sqrt(len2)
 }

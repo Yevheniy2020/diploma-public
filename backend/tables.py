@@ -39,9 +39,6 @@ class SpaceTable(SQLModel, table=True):
     map_id: int = Field(foreign_key="maps.id", index=True)
     name: str
     vertices_json: str
-    # Exactly one space per map should have is_home=True (enforced by a
-    # partial unique index in schema.sql). The robot spawns at this space's
-    # centroid and RETURN_HOME navigates to it.
     is_home: bool = Field(default=False)
     created_at: datetime = Field(default_factory=_now)
     updated_at: datetime = Field(default_factory=_now)
@@ -65,10 +62,6 @@ class CommandLogTable(SQLModel, table=True):
 
 
 class CommandCorrectionTable(SQLModel, table=True):
-    """Operator feedback for low-confidence intent predictions. Each row
-    captures the model's guess, the operator's verdict (was it right?),
-    and an optional override intent. `scripts/retrain_from_feedback.py`
-    folds confirmed/overridden rows back into the training corpus."""
     __tablename__ = "command_corrections"
 
     id: Optional[int] = Field(default=None, primary_key=True)

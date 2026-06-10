@@ -6,7 +6,6 @@ export function decodeGrid(b64: string): Uint8Array {
 }
 
 export function encodeGrid(arr: Uint8Array): string {
-  // String.fromCharCode in chunks to avoid argument-count limits on large maps.
   let binary = ''
   const chunk = 0x8000
   for (let i = 0; i < arr.length; i += chunk) {

@@ -85,8 +85,6 @@ def _find_space(db: Session, map_id: int, name: str) -> Optional[SpaceTable]:
 
 
 def _find_home_space(db: Session, map_id: int) -> Optional[SpaceTable]:
-    """Return the home-tagged space of this map, or None if none flagged
-    (RETURN_HOME falls back to the first space in that case)."""
     home = db.exec(
         select(SpaceTable).where(SpaceTable.map_id == map_id, SpaceTable.is_home == True)  # noqa: E712
     ).first()
@@ -98,8 +96,6 @@ def _find_home_space(db: Session, map_id: int) -> Optional[SpaceTable]:
 
 
 def _parse_polygon(s: str) -> Optional[list[tuple[float, float]]]:
-    """Parse a space's vertices_json into a polygon. Returns None on
-    malformed input — caller treats it as `no_path` rather than 500."""
     try:
         raw = json.loads(s)
     except (json.JSONDecodeError, TypeError):
@@ -123,8 +119,6 @@ def _navigate_to_space(
     pose: RobotPose,
     space: SpaceTable,
 ) -> tuple[bool, dict[str, Any], Optional[str]]:
-    """Plan A* from the robot to the closest free cell inside the space's
-    polygon. Shared by NAVIGATE and RETURN_HOME."""
     grid = _grid_for(map_row)
     polygon = _parse_polygon(space.vertices_json)
     if polygon is None:
@@ -181,7 +175,6 @@ _DIRECTION_TO_UK = {
     "right": "праворуч",
 }
 
-# Offset direction → unit vector in world frame (X=east, Y=north).
 _OFFSET_TO_VECTOR: dict[str, tuple[float, float]] = {
     "north": (0.0, 1.0),
     "south": (0.0, -1.0),
@@ -189,8 +182,6 @@ _OFFSET_TO_VECTOR: dict[str, tuple[float, float]] = {
     "west": (-1.0, 0.0),
     "up": (0.0, 1.0),
     "down": (0.0, -1.0),
-    # When phrased relative to a landmark, "ліворуч від X" / "перед X" — treat
-    # them as world-frame because the user is reading the map top-down.
     "left": (-1.0, 0.0),
     "right": (1.0, 0.0),
     "forward": (0.0, 1.0),
@@ -214,11 +205,6 @@ _OFFSET_DISPLAY_UK = {
 def _clamp_goal_to_map(
     map_row: MapTable, gx: float, gy: float
 ) -> tuple[float, float]:
-    """Pull a goal back inside the map. The user can ask for "10m forward"
-    on a 10×6 m map; without clamping, the goal lands outside the grid and
-    A* returns []. We trim to one cell of margin from each edge — robot then
-    drives as far as it physically can in that direction.
-    """
     margin = map_row.cell_size_m
     map_w = map_row.width_cells * map_row.cell_size_m
     map_h = map_row.height_cells * map_row.cell_size_m
@@ -231,8 +217,6 @@ def _clamp_goal_to_map(
 def _resolve_offset(
     anchor_x: float, anchor_y: float, offset: dict[str, Any]
 ) -> tuple[float, float, str]:
-    """Apply an offset vector to an anchor point. Returns (gx, gy, suffix)
-    or raises ValueError on bad input."""
     direction = offset.get("direction", "")
     if not isinstance(direction, str) or direction not in _OFFSET_TO_VECTOR:
         raise ValueError(f"unknown offset direction '{direction}'")
@@ -255,10 +239,6 @@ def _navigate_with_offset(
     target_name: str,
     offset: dict[str, Any],
 ) -> tuple[bool, dict[str, Any], Optional[str]]:
-    """Navigate to an offset from a space's centroid. If the offset point is
-    inside a wall (or outside the map after clamping has no path), we fall
-    back to the nearest free cell — keeps "above the kitchen by half a meter"
-    usable even when the centroid pushes into furniture geometry."""
     space = _find_space(db, map_row.id, target_name.strip().lower())  # type: ignore[arg-type]
     if space is None:
         return False, {"target": target_name, "offset": offset}, f"space '{target_name}' not found"
@@ -272,7 +252,6 @@ def _navigate_with_offset(
         gx, gy, suffix = _resolve_offset(cx, cy, offset)
     except ValueError as e:
         return False, {"target": space.name, "offset": offset}, str(e)
-    # An offset near the edge of the map can push the goal outside the grid.
     gx, gy = _clamp_goal_to_map(map_row, gx, gy)
 
     grid = _grid_for(map_row)
@@ -302,35 +281,21 @@ def _drive_relative(
     direction: str,
     distance_m: float,
 ) -> tuple[bool, dict[str, Any], Optional[str]]:
-    """Free-form motion relative to robot heading. Computes a goal coordinate
-    in the world frame, then runs A* so walls are still avoided. Falls back
-    to a direct two-point path for very short moves where A* may not produce
-    a useful path on a coarse grid.
-    """
     if direction == "forward":
         heading = pose.theta
     elif direction == "backward":
         heading = pose.theta + math.pi
     elif direction == "left":
-        # ROS convention: robot's left = +90° CCW from heading. Looking at a
-        # top-down map with N up: when robot faces east (theta=0), its left
-        # is north (screen-up). Same convention as the new ROTATE intent.
         heading = pose.theta + math.pi / 2
     elif direction == "right":
         heading = pose.theta - math.pi / 2
     else:
         return False, {"direction": direction}, f"unknown direction '{direction}'"
 
-    # Snap the minimum distance to one cell so a tiny "5 см" command still
-    # produces visible motion. The user's expectation is calibrated to the
-    # visual scale of the map; sub-cell motion looks broken even when the
-    # math is correct.
     cell = map_row.cell_size_m
     distance_m = max(cell, min(10.0, float(distance_m)))
     raw_gx = pose.x + distance_m * math.cos(heading)
     raw_gy = pose.y + distance_m * math.sin(heading)
-    # Clamp goal so it can't sit outside the grid — the user can legitimately
-    # ask for more meters than the map is wide.
     gx, gy = _clamp_goal_to_map(map_row, raw_gx, raw_gy)
     actual_distance = math.hypot(gx - pose.x, gy - pose.y)
     actual_cells = round(actual_distance / cell)
@@ -343,8 +308,6 @@ def _drive_relative(
         cell_size=map_row.cell_size_m,
     )
     if not waypoints and actual_distance < 0.3:
-        # Short hops can fail planning when start and goal share a cell.
-        # Fall back to a direct segment — caller's problem if it crosses a wall.
         waypoints = [(pose.x, pose.y), (gx, gy)]
 
     display = f"{_DIRECTION_TO_UK.get(direction, direction)} на {actual_distance:.2f} м"
@@ -370,10 +333,6 @@ def _navigate_anchor(
     memory: Optional[dict[str, Any]],
     anchor: str,
 ) -> tuple[bool, dict[str, Any], Optional[str]]:
-    """Resolve 'previous_start' / 'previous_goal' from the frontend's memory
-    blob and plan a path to the resolved coordinate. Distinct from _navigate
-    because there's no space — the destination is a free-floating point.
-    """
     if not isinstance(memory, dict):
         return False, {"anchor": anchor}, "no previous navigation"
 
@@ -468,10 +427,6 @@ def _dispatch_intent_one(
     intent: Intent,
     params: dict[str, Any],
 ) -> tuple[bool, dict[str, Any], Optional[str]]:
-    """Run a single intent given a (possibly simulated) pose. Returns
-    (success, action_result, error) — same shape every per-intent helper
-    already uses. Extracted from post_voice so multi-step sequences can
-    re-run the dispatcher with updated poses."""
     if intent is Intent.NAVIGATE:
         anchor = params.get("anchor")
         target_raw = params.get("target")
@@ -524,8 +479,6 @@ def _dispatch_intent_one(
             return False, {}, "no spaces on this map"
         return _navigate_to_space(db, map_row, pose, home)
 
-    # Voice-perimeter drafting — backend just acknowledges; the frontend
-    # accumulates the polygon and POSTs to /api/spaces on FINISH_SPACE.
     if intent is Intent.START_SPACE:
         name_raw = params.get("name")
         space_name = name_raw.strip().lower() if isinstance(name_raw, str) else ""
@@ -541,12 +494,6 @@ def _dispatch_intent_one(
 
 
 async def _forward_to_robot(intent: Intent, action_result: dict[str, Any]) -> None:
-    """Forward motion intents to the real-robot adapter.
-
-    Movement intents publish waypoints; STOP triggers an e-stop; every
-    other intent (space editing, drafts, unknown) is a no-op here because
-    the device only cares about motion.
-    """
     adapter = get_adapter()
     if intent is Intent.STOP:
         await adapter.stop()
@@ -571,11 +518,6 @@ async def _forward_to_robot(intent: Intent, action_result: dict[str, Any]) -> No
 def _simulate_pose_after(
     pose: RobotPose, intent: Intent, action_result: dict[str, Any]
 ) -> RobotPose:
-    """Compute the pose the robot will end up at AFTER the given action
-    completes, so the next action in a multi-step sequence can be planned
-    from the right starting point. ROTATE updates theta only; movement
-    intents jump to the last waypoint with theta along the final segment;
-    everything else leaves pose unchanged."""
     if intent is Intent.ROTATE:
         tt = action_result.get("target_theta")
         if isinstance(tt, (int, float)):
@@ -681,9 +623,6 @@ async def post_voice(
     if not isinstance(pending, list):
         pending = []
 
-    # Mid-confidence band: don't dispatch. Log the row so the frontend can
-    # POST /api/voice/feedback with command_log_id once the operator
-    # decides; the actual action runs only on confirmation.
     if intent is Intent.UNCERTAIN:
         latency_ms = int((time.monotonic() - started) * 1000)
         log_row = await log_command(
@@ -713,16 +652,8 @@ async def post_voice(
             "error": error or "intent not recognized",
         }
 
-    # Hardware bridge. In sim mode the adapter is a no-op so this is free;
-    # in http mode it forwards waypoints / stop to the device alongside
-    # returning them to the browser. The frontend still animates the sim
-    # robot — operators see two layers if they look closely (commanded
-    # path vs. real-robot reported pose).
     await _forward_to_robot(intent, action_result)
 
-    # Multi-step: pre-simulate subsequent actions so the frontend can queue
-    # and dispatch each as the robot becomes idle. Pose carries forward
-    # through ROTATE / movement intents.
     follow_ups: list[VoiceFollowUp] = []
     sim_pose = _simulate_pose_after(pose, intent, action_result)
     for item in pending:
@@ -758,8 +689,6 @@ async def post_voice(
         transcription=params.get("original_text") if isinstance(params, dict) else None,
     )
 
-    # Always expose command_log_id so the frontend can offer a manual
-    # «виправити останню команду» button even when the model was confident.
     return VoiceResponse(
         intent=intent,
         params=params,
@@ -774,9 +703,6 @@ async def post_voice_feedback(
     body: VoiceFeedbackRequest,
     db: Session = Depends(get_session),
 ) -> VoiceFeedbackResponse:
-    """Operator's verdict on an UNCERTAIN prediction. Stores a row in
-    command_corrections; if was_correct=True, dispatches the originally
-    predicted intent so the frontend doesn't need a second voice round."""
     log_row = db.get(CommandLogTable, body.command_log_id)
     if log_row is None:
         raise HTTPException(
@@ -788,19 +714,12 @@ async def post_voice_feedback(
     except json.JSONDecodeError:
         params_blob = {}
 
-    # Two paths converge here: (a) UNCERTAIN log row that's awaiting
-    # confirmation — predicted intent + params live under the
-    # _predicted_* keys; (b) a previously-dispatched command being
-    # corrected post-hoc — log_row.intent IS the intent and params_blob
-    # IS the params. Normalise so downstream logic doesn't care.
     if log_row.intent == Intent.UNCERTAIN.value:
         predicted_intent_str = str(params_blob.get("_predicted_intent", "UNKNOWN"))
         predicted_params = params_blob.get("_predicted_params") or {}
         predicted_confidence = float(params_blob.get("_confidence") or 0.0)
     else:
         predicted_intent_str = log_row.intent
-        # Strip private/_metadata keys (_confidence etc.) — they were
-        # added by _try_classify_local and shouldn't pollute slot edits.
         predicted_params = {
             k: v
             for k, v in params_blob.items()
@@ -808,8 +727,6 @@ async def post_voice_feedback(
         }
         predicted_confidence = float(params_blob.get("_confidence") or 1.0)
 
-    # Operator may have edited slot values in the modal — those win
-    # over the model's predicted_params for both dispatch and DB record.
     effective_intent_str = (
         body.corrected_intent.value
         if body.corrected_intent
@@ -839,25 +756,6 @@ async def post_voice_feedback(
     db.commit()
     db.refresh(correction)
 
-    # Persist the (transcription → intent + params) mapping into
-    # learned_overrides whenever the operator either confirmed-with-edits
-    # or pushed a different intent. Pure rejections without slot edits
-    # don't generate a positive rule, so we skip them.
-    transcription = log_row.transcription or ""
-    teach_intent = effective_intent_str
-    teach_params = effective_params
-    should_teach = bool(transcription) and teach_intent in Intent.__members__ and (
-        body.was_correct
-        or body.corrected_intent is not None
-        or body.corrected_params is not None
-    )
-    if should_teach:
-        try:
-            from services import learned_overrides as _lo  # noqa: PLC0415
-            _lo.upsert(transcription, teach_intent, teach_params)
-        except Exception as exc:  # noqa: BLE001
-            _log.warning("learned_overrides upsert failed: %s", exc)
-
     if not body.was_correct:
         return VoiceFeedbackResponse(recorded=True)
 
@@ -880,9 +778,6 @@ async def post_voice_feedback(
             action_result={"error": f"unknown intent {effective_intent_str!r}"},
         )
 
-    # Pose comes from the feedback request (frontend re-sends current
-    # robot pose). For NAVIGATE / DELETE_SPACE / RENAME_SPACE pose is unused; for
-    # ROTATE / DRIVE_RELATIVE it determines the goal pose.
     pose = body.robot_pose or RobotPose(x=0.0, y=0.0, theta=0.0)
     success, action_result, error = _dispatch_intent_one(
         db, map_row, pose, None, intent, effective_params
@@ -899,8 +794,6 @@ async def post_voice_feedback(
 
 @router.get("/voice/feedback/stats", response_model=FeedbackStats)
 async def get_feedback_stats(db: Session = Depends(get_session)) -> FeedbackStats:
-    """Snapshot for the training panel: how many corrections await
-    retraining, when retraining last finished, and current state."""
     return FeedbackStats(
         pending_count=training_orchestrator.get_pending_count(db),
         last_retrained_at=training_orchestrator.get_last_retrained_at(),
@@ -911,10 +804,6 @@ async def get_feedback_stats(db: Session = Depends(get_session)) -> FeedbackStat
 @router.post("/voice/feedback/retrain", status_code=status.HTTP_202_ACCEPTED,
              response_model=RetrainStatus)
 async def trigger_retrain() -> RetrainStatus:
-    """Kick off scripts/retrain_from_feedback.py in a background task.
-    Returns 202 (accepted) on success or 409 (conflict) if a retrain is
-    already running. The model is hot-reloaded in-process when the
-    subprocess exits cleanly."""
     if not training_orchestrator.start_retrain():
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -928,14 +817,7 @@ async def get_retrain_status() -> RetrainStatus:
     return RetrainStatus(**training_orchestrator.get_status())
 
 
-# ---------------------------------------------------------------------------
-# Correction list / edit / delete (operator-facing management)
-# ---------------------------------------------------------------------------
-
-
 def _row_to_model(row: CommandCorrectionTable) -> CorrectionRow:
-    """Pack a DB row into the CorrectionRow shape — including the
-    «effective» (intent, params) the row contributes to retraining."""
     try:
         pred_params = json.loads(row.predicted_params_json or "{}")
     except json.JSONDecodeError:
@@ -965,67 +847,11 @@ def _row_to_model(row: CommandCorrectionTable) -> CorrectionRow:
     )
 
 
-def _resync_override_for(transcription: str, db: Session) -> None:
-    """After an edit/delete that may have affected `transcription`'s
-    learned override, find the most recent remaining «active» correction
-    for that text and rewrite the JSON entry accordingly. If no active
-    rows remain, drop the entry entirely."""
-    from services import learned_overrides as _lo  # noqa: PLC0415
-    if not transcription:
-        return
-    stmt = (
-        select(CommandCorrectionTable)
-        .where(CommandCorrectionTable.transcription == transcription)
-        .order_by(CommandCorrectionTable.id.desc())  # type: ignore[union-attr]
-    )
-    rows = db.exec(stmt).all()
-    for r in rows:
-        # «active» = either confirmed or carries an override. Pure
-        # rejections without override don't teach anything.
-        is_active = bool(r.was_correct) or bool(r.corrected_intent) or bool(
-            r.corrected_params_json
-        )
-        if not is_active:
-            continue
-        intent = r.corrected_intent or r.predicted_intent
-        try:
-            params = (
-                json.loads(r.corrected_params_json)
-                if r.corrected_params_json
-                else json.loads(r.predicted_params_json or "{}")
-            )
-        except json.JSONDecodeError:
-            params = {}
-        if isinstance(params, dict) and intent:
-            _lo.upsert(transcription, intent, params)
-            return
-    # Nothing left to teach — remove the entry from the override file.
-    _drop_override(transcription)
-
-
-def _drop_override(transcription: str) -> None:
-    """Remove a single phrase from learned_overrides.json, atomic write."""
-    from services import learned_overrides as _lo  # noqa: PLC0415
-    overrides = dict(_lo.all_overrides())
-    key = _lo._normalize(transcription)  # noqa: SLF001
-    if key not in overrides:
-        return
-    overrides.pop(key)
-    path = _lo.OVERRIDES_PATH
-    path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_suffix(".tmp")
-    tmp.write_text(json.dumps(overrides, ensure_ascii=False, indent=2), encoding="utf-8")
-    import os as _os
-    _os.replace(tmp, path)
-
-
 @router.get("/voice/feedback/corrections", response_model=list[CorrectionRow])
 async def list_corrections(
     pending_only: bool = True,
     db: Session = Depends(get_session),
 ) -> list[CorrectionRow]:
-    """Pending corrections (those that landed after the last retrain) by
-    default. Pass `pending_only=false` to inspect the full history."""
     stmt = select(CommandCorrectionTable).order_by(CommandCorrectionTable.id.desc())  # type: ignore[union-attr]
     if pending_only:
         last = training_orchestrator.get_last_retrained_at()
@@ -1047,8 +873,6 @@ async def patch_correction(
     body: EditCorrectionRequest,
     db: Session = Depends(get_session),
 ) -> CorrectionRow:
-    """Edit the operator's verdict on an existing correction. Both the
-    DB row and the learned-override entry stay in sync."""
     row = db.get(CommandCorrectionTable, correction_id)
     if row is None:
         raise HTTPException(
@@ -1057,21 +881,13 @@ async def patch_correction(
 
     if body.corrected_intent is not None:
         row.corrected_intent = body.corrected_intent.value
-        # Editing the intent counts as the operator owning this row's
-        # verdict — flip was_correct off so it's interpreted as a
-        # "different intent" override during retraining.
         row.was_correct = False if body.corrected_intent.value != row.predicted_intent else True
     if body.corrected_params is not None:
         row.corrected_params_json = json.dumps(body.corrected_params, ensure_ascii=False)
-        # Slot edit alone counts as confirming intent + adjusting params.
         row.was_correct = True
     db.add(row)
     db.commit()
     db.refresh(row)
-
-    # Re-derive the override for this transcription from the current
-    # (possibly edited) state of all corrections that share its text.
-    _resync_override_for(row.transcription or "", db)
 
     return _row_to_model(row)
 
@@ -1087,8 +903,6 @@ async def delete_correction(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="correction not found"
         )
-    transcription = row.transcription or ""
     db.delete(row)
     db.commit()
-    _resync_override_for(transcription, db)
     return None

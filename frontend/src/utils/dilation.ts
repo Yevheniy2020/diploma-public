@@ -1,5 +1,3 @@
-// Mirror of backend services/inflation.inflate, used purely for the visual
-// "show inflation" halo in Scene2D — the planner still inflates server-side.
 export function dilateGrid(
   grid: Uint8Array,
   width: number,

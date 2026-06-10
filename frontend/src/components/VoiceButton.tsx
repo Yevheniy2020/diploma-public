@@ -1,7 +1,3 @@
-// Push-to-talk button. While recording, an AnalyserNode samples the input
-// stream and reports back via onLevel so the parent can render audio bars.
-// Visual state is driven by the `processing` prop (parent overrides) plus
-// the local recording state.
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useAppStore } from '../state/useAppStore'
 import { toast } from '../state/useToaster'
@@ -85,7 +81,6 @@ function VoiceButton({ onAudio, onLevel, processing }: Props) {
       try {
         rec.stop()
       } catch {
-        /* already stopped */
       }
     }
     if (stopTimerRef.current !== null) {
@@ -118,7 +113,6 @@ function VoiceButton({ onAudio, onLevel, processing }: Props) {
         }
       }
     } catch {
-      /* Permissions API unavailable — fall through */
     }
 
     let stream: MediaStream
@@ -145,7 +139,6 @@ function VoiceButton({ onAudio, onLevel, processing }: Props) {
     recorderRef.current = rec
     chunksRef.current = []
 
-    // Audio level analyser — report normalized RMS to onLevel for the bars.
     try {
       const Ctx =
         window.AudioContext ||
@@ -170,7 +163,6 @@ function VoiceButton({ onAudio, onLevel, processing }: Props) {
       }
       tick()
     } catch {
-      /* Audio analyser optional — ignore failures */
     }
 
     rec.ondataavailable = (e) => {

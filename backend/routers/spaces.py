@@ -38,7 +38,6 @@ def _to_response(row: SpaceTable) -> SpaceResponse:
 
 
 def _clear_other_homes(db: Session, map_id: int, keep_id: int | None) -> None:
-    """Unset is_home on every other space of this map. Caller flushes."""
     rows = db.exec(
         select(SpaceTable).where(
             SpaceTable.map_id == map_id, SpaceTable.is_home == True  # noqa: E712
@@ -62,9 +61,6 @@ def list_spaces(map_id: int, db: Session = Depends(get_session)) -> list[SpaceRe
 
 @router.post("/api/spaces", response_model=SpaceResponse, status_code=status.HTTP_201_CREATED)
 def create_space(payload: SpaceCreate, db: Session = Depends(get_session)) -> SpaceResponse:
-    """Create a space from a voice-demonstrated perimeter (or any caller).
-    If is_home=True, atomically clears the flag on any prior home-space of
-    this map."""
     if db.get(MapTable, payload.map_id) is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="map not found")
     polygon = [(float(x), float(y)) for x, y in payload.vertices]
@@ -93,8 +89,6 @@ def create_space(payload: SpaceCreate, db: Session = Depends(get_session)) -> Sp
 def patch_space(
     space_id: int, payload: SpaceUpdate, db: Session = Depends(get_session)
 ) -> SpaceResponse:
-    """Edit a space: rename or assign as home. Setting is_home=True
-    atomically clears the flag on any prior home-space of the same map."""
     row = db.get(SpaceTable, space_id)
     if row is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="space not found")
@@ -126,8 +120,6 @@ def delete_space(space_id: int, db: Session = Depends(get_session)) -> None:
     if row is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="space not found")
     if row.is_home:
-        # Refuse to leave a map without a home space — caller should assign
-        # another space as home first via PATCH.
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="cannot delete the home space — assign another space as home first",

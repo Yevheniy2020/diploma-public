@@ -1,0 +1,19 @@
+{"text": "delete point 1", "intent": "DELETE_SPACE", "lang": "en", "slots": {"name": "point 1"}}
+{"text": "зберегти", "intent": "FINISH_SPACE", "lang": "uk"}
+{"text": "готово", "intent": "FINISH_SPACE", "lang": "uk"}
+{"text": "back up half a meter", "intent": "DRIVE_RELATIVE", "lang": "en"}
+{"text": "повернись на 90 градусів вправо", "intent": "ROTATE", "lang": "uk"}
+{"text": "return to base", "intent": "RETURN_HOME", "lang": "en"}
+{"text": "відмінити", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "трохи вперед", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "як справи", "intent": "UNKNOWN", "lang": "uk"}
+{"text": "зміни назву кабінет 2 на офіс", "intent": "RENAME_SPACE", "lang": "uk", "slots": {"old_name": "кабінет 2", "new_name": "офіс"}}
+{"text": "thanks", "intent": "UNKNOWN", "lang": "en"}
+{"text": "переіменувати балкон 2 на кабінет", "intent": "RENAME_SPACE", "lang": "uk", "slots": {"old_name": "балкон 2", "new_name": "кабінет"}}
+{"text": "стій на місці", "intent": "STOP", "lang": "uk"}
+{"text": "поверни на 45 градусів ліворуч", "intent": "ROTATE", "lang": "uk"}
+{"text": "скасуй малювання", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "малювати кімнату ванна", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "ванна"}}
+{"text": "begin room office", "intent": "START_SPACE", "lang": "en", "slots": {"name": "office"}}
+{"text": "перейди в офіс", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "go to the corridor please", "intent": "NAVIGATE", "lang": "en"}

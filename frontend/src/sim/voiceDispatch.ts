@@ -1,7 +1,3 @@
-// Maps a VoiceResponse from the backend to store mutations and toast feedback.
-// Keep this pure (no React hooks) so VoiceButton can call it from a
-// non-component context. Action-result field names mirror
-// backend/routers/voice.py exactly — see the per-intent helpers there.
 import { createSpace } from '../api/client'
 import { useAppStore } from '../state/useAppStore'
 import { toast } from '../state/useToaster'
@@ -39,8 +35,6 @@ function dispatchNavigate(resp: VoiceResponse, returnHome: boolean) {
     return
   }
 
-  // Backend sets reason='no_path' when the planner returned []; missing
-  // waypoints array entirely means _find_space returned None.
   if (reason === 'no_path') {
     toast.error(`path not found${target ? `: ${target}` : ''}`)
   } else {
@@ -52,8 +46,6 @@ export function dispatchVoiceResponse(resp: VoiceResponse): void {
   const ar = resp.action_result ?? {}
   const store = useAppStore.getState()
 
-  // Mid-confidence: backend wants the operator to confirm. Park the
-  // prediction in store; CorrectionDialog renders against this state.
   if (resp.intent === 'UNCERTAIN') {
     if (typeof resp.command_log_id !== 'number') {
       toast.error('uncertain prediction without command_log_id')
@@ -113,7 +105,6 @@ export function dispatchVoiceResponse(resp: VoiceResponse): void {
     }
 
     case 'DELETE_SPACE': {
-      // Backend returns { deleted: <name> }. Resolve to local id by name lookup.
       const deleted = asString(ar.deleted)
       if (deleted) {
         const row = store.spaces.find((r) => r.name === deleted)
@@ -127,7 +118,6 @@ export function dispatchVoiceResponse(resp: VoiceResponse): void {
     }
 
     case 'RENAME_SPACE': {
-      // Backend returns { old_name, new_name, space_id }.
       const spaceId = asNumber(ar.space_id)
       const newName = asString(ar.new_name)
       if (spaceId !== undefined && newName) {
@@ -145,10 +135,6 @@ export function dispatchVoiceResponse(resp: VoiceResponse): void {
       return
 
     case 'START_SPACE': {
-      // Backend returns the space name in action_result.space_name; the
-      // params.name is also valid (regex preempt sets it). Either source
-      // works, action_result wins because that's what the dispatcher
-      // already serialised.
       const name =
         asString(ar.space_name) ??
         asString(resp.params?.name) ??

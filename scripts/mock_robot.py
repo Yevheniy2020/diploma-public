@@ -1,21 +1,3 @@
-"""Mock robot for demoing the real-robot adapter without hardware.
-
-Implements the contract from docs/hardware/esp32.md:
-  - Listens on http://0.0.0.0:<port>/cmd for waypoints / stop
-  - Posts pose to <backend>/api/robot/pose at ~10 Hz
-  - Simulates diff-drive kinematics (same model as the browser simulator)
-
-Run with the backend already up:
-
-    .venv/bin/python scripts/mock_robot.py \\
-        --backend http://localhost:8000 \\
-        --listen-port 8080 \\
-        --start 1.5,1.5,0.0
-
-Then set the backend's .env to ROBOT_MODE=http, ROBOT_URL=http://localhost:8080
-and restart it. Click on the map (or speak a command) — the mock robot
-moves and the backend's /api/robot/status flips to connected.
-"""
 from __future__ import annotations
 
 import argparse
@@ -32,14 +14,12 @@ from uvicorn import Config, Server
 
 _log = logging.getLogger("mock_robot")
 
-# Mirror of frontend/src/sim/kinematics.ts constants. Keep these in
-# sync if the simulator's behaviour is retuned.
 LINEAR_SPEED = 0.5
 ANGULAR_SPEED = 1.5
 ARRIVAL_THRESHOLD = 0.05
 ANGLE_THRESHOLD = 0.05
 FORWARD_GATE = 0.7
-DT = 0.1  # 10 Hz physics + pose report
+DT = 0.1
 
 
 @dataclass
@@ -78,9 +58,6 @@ class MockRobot:
         _log.info("STOP")
 
     def step(self, dt: float) -> None:
-        # Same loop as the JS kinematics: rotate-toward-target first, only
-        # creep forward when the heading is within FORWARD_GATE. Pops the
-        # waypoint when within ARRIVAL_THRESHOLD.
         if not self.queue:
             return
         gx, gy = self.queue[0]
@@ -100,7 +77,6 @@ class MockRobot:
             self.pose.y += step_d * math.sin(self.pose.theta)
 
     async def report_loop(self) -> None:
-        # 10 Hz: step physics + push pose to backend.
         url = f"{self.backend_url}/api/robot/pose"
         while True:
             self.step(DT)

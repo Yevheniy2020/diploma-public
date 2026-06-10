@@ -5,7 +5,6 @@ export type Locale = 'en' | 'ua'
 const LS_KEY = 'diploma.locale'
 
 const dict = {
-  // Header / chrome
   'header.tag': { en: 'UA + EN', ua: 'УКР + АНГ' },
   'header.title': { en: 'Semantic voice navigation', ua: 'Семантична голосова навігація' },
   'header.subtitle': {
@@ -15,7 +14,6 @@ const dict = {
   'meta.backend.ok': { en: 'backend · ok', ua: 'бекенд · ok' },
   'meta.backend.down': { en: 'backend · down', ua: 'бекенд · недоступний' },
 
-  // Mode toggles + toolbar
   'mode.2d': { en: '2D · top-down', ua: '2D · згори' },
   'mode.3d': { en: '3D · perspective', ua: '3D · перспектива' },
   'toggle.grid': { en: 'grid', ua: 'сітка' },
@@ -23,13 +21,11 @@ const dict = {
   'toolbar.hint.3d': { en: 'drag → orbit · scroll → zoom', ua: 'drag → орбіта · scroll → масштаб' },
   'toolbar.hint.2d': { en: 'click on map → set goal', ua: 'клік на мапу → ціль' },
 
-  // Scene placeholders
   'scene.loading': { en: 'loading…', ua: 'завантаження…' },
   'scene.error': { en: 'error', ua: 'помилка' },
   'scene.noMap': { en: 'no map loaded', ua: 'мапу не завантажено' },
   'scene.renderError': { en: 'scene · {mode} render error', ua: 'сцена · помилка рендеру {mode}' },
 
-  // Voice panel
   'voice.title': { en: 'Voice', ua: 'Голос' },
   'voice.state.idle': { en: 'standby · press to speak', ua: 'готовий · натисніть, щоб говорити' },
   'voice.state.recording': { en: '◉ recording · opus webm', ua: '◉ запис · opus webm' },
@@ -44,7 +40,6 @@ const dict = {
   },
   'voice.error': { en: 'voice: {msg}', ua: 'голос: {msg}' },
 
-  // Labels panel
   'labels.title': { en: 'Semantic labels', ua: 'Семантичні мітки' },
   'labels.add': { en: '+ add', ua: '+ додати' },
   'labels.empty': {
@@ -57,7 +52,6 @@ const dict = {
   'labels.toast.going': { en: 'going to {name}', ua: 'прямую до {name}' },
   'labels.toast.deleted': { en: 'deleted: {name}', ua: 'видалено: {name}' },
 
-  // Add-label dialog
   'addLabel.title': { en: 'add label at robot', ua: 'нова мітка на позиції робота' },
   'addLabel.name': { en: 'name', ua: 'назва' },
   'addLabel.radius': { en: 'radius (m)', ua: 'радіус (м)' },
@@ -75,13 +69,11 @@ const dict = {
   },
   'addLabel.toast.created': { en: 'created: {name}', ua: 'створено: {name}' },
 
-  // Label editor (inline)
   'labelEditor.descriptionPlaceholder': {
     en: 'description (where I eat)',
     ua: 'опис (напр. де я їм)',
   },
 
-  // Training panel
   'training.title': { en: 'Training', ua: 'Навчання' },
   'training.pending': { en: 'pending corrections', ua: 'корекції в очікуванні' },
   'training.lastRetrained': { en: 'last retrained', ua: 'останнє тренування' },
@@ -126,7 +118,6 @@ const dict = {
   'training.phase.done.hint': { en: 'new weights loaded', ua: 'нові ваги перезавантажено' },
   'training.phase.failed.label': { en: 'error', ua: 'помилка' },
 
-  // Correction dialog
   'correction.title': { en: 'not quite sure', ua: 'не зовсім впевнений' },
   'correction.transcription': { en: 'transcription', ua: 'транскрипція' },
   'correction.intent': { en: 'intent', ua: 'намір' },
@@ -136,7 +127,6 @@ const dict = {
   'correction.saving': { en: 'saving…', ua: 'збереження…' },
   'correction.toast.saved': { en: 'correction saved', ua: 'виправлення записано' },
 
-  // Corrections list dialog
   'list.title': { en: 'pending corrections', ua: 'корекції що очікують' },
   'list.intent': { en: 'intent', ua: 'намір' },
   'list.confirmDelete': { en: 'really delete?', ua: 'справді видалити?' },
@@ -163,11 +153,9 @@ const dict = {
   'list.toast.updated': { en: 'correction updated', ua: 'корекцію оновлено' },
   'list.toast.deleted': { en: 'correction deleted', ua: 'корекцію видалено' },
 
-  // Slot editor
   'slot.parameters': { en: 'parameters', ua: 'параметри' },
   'slot.choose': { en: '— choose —', ua: '— оберіть —' },
 
-  // Goal panel
   'goal.title': { en: 'Goal · current', ua: 'Ціль · поточна' },
   'goal.x': { en: 'x', ua: 'x' },
   'goal.y': { en: 'y', ua: 'y' },
@@ -180,15 +168,12 @@ const dict = {
     ua: '— активної цілі немає. Скажіть NAVIGATE або клікніть на мапу.',
   },
 
-  // Lang switch button
   'lang.toggle': { en: 'language', ua: 'мова' },
 
-  // Real-robot indicator (TopMetaBar)
   'robot.online': { en: 'robot · online', ua: 'робот · онлайн' },
   'robot.offline': { en: 'robot · offline', ua: 'робот · офлайн' },
   'robot.stale': { en: 'robot · stale', ua: 'робот · застаріло' },
 
-  // Map edit
   'edit.title': { en: 'edit', ua: 'редагувати' },
   'edit.off': { en: 'off', ua: 'вимк.' },
   'edit.paint': { en: 'wall+', ua: 'стіна+' },
@@ -202,7 +187,6 @@ const dict = {
     ua: 'не вдалось зберегти мапу: {msg}',
   },
 
-  // Map delete
   'map.delete.title': { en: 'delete map', ua: 'видалити мапу' },
   'map.delete.tooltip': { en: 'delete map', ua: 'видалити мапу' },
   'map.delete.confirm': {

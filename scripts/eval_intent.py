@@ -1,14 +1,3 @@
-"""Evaluate the trained joint intent + slot model on intents_eval.jsonl.
-
-Reports:
-  - per-class intent precision/recall/F1, macro-F1, confusion matrix
-  - slot extraction: per-intent name exact-match accuracy + token-level F1
-  - optionally a side-by-side comparison with the existing Groq pipeline
-
-Usage:
-    cd backend && .venv/bin/python ../scripts/eval_intent.py
-    .venv/bin/python ../scripts/eval_intent.py --compare-groq
-"""
 from __future__ import annotations
 
 import argparse
@@ -30,18 +19,12 @@ log = logging.getLogger("eval_intent")
 
 
 def _slot_match(pred: str, gold: str) -> bool:
-    """Compare slot strings tolerantly: exact case-insensitive, OR
-    sharing a long enough common prefix to ignore Ukrainian inflection
-    (e.g. «кухня» vs «кухню» share «кухн» — production resolves the
-    in-text form to its canonical label via fuzzy_match, so eval should
-    accept either)."""
     p = pred.strip().lower()
     g = gold.strip().lower()
     if not p or not g:
         return False
     if p == g:
         return True
-    # Common prefix of length ≥ 3 with both sides ≥ 3 chars long.
     common = 0
     for a, b in zip(p, g):
         if a == b:
@@ -62,9 +45,6 @@ def load_jsonl(path: Path) -> list[dict[str, Any]]:
 
 
 def _synth_active(gold_slots: dict[str, Any]) -> list[dict[str, Any]]:
-    """Build a permissive active_spaces pool so single-row eval mirrors
-    what production sees. Includes a few common rooms plus any name
-    referenced in this row's gold slots."""
     out: list[dict[str, Any]] = [
         {"name": "база"}, {"name": "кухня"}, {"name": "спальня"},
         {"name": "коридор"}, {"name": "балкон"}, {"name": "точка 1"},
@@ -80,10 +60,6 @@ def predict_local(
     model_dir: Path,
     rows: list[dict[str, Any]],
 ) -> list[tuple[str, dict[str, Any]]]:
-    """Run the local classifier on every SINGLE-INTENT row. Chain rows
-    (those with a `segments` field) are skipped here — `predict_chains`
-    handles them separately. Returns [(predicted_intent, predicted_slots),
-    ...] aligned 1:1 with the filtered single-intent input."""
     sys.path.insert(0, str(ROOT / "backend"))
     from services import intent_classifier as ic  # noqa: E402
     from services import slot_extractor as se  # noqa: E402
@@ -113,10 +89,6 @@ def predict_chains(
     model_dir: Path,
     rows: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
-    """Run the local classifier on CHAIN rows. Each result is a dict:
-    `{boundary_offsets, segments: [{intent, slots}, ...]}`. Slot
-    extraction runs per-segment with `_synth_active` from the union of
-    all segments' gold slots."""
     sys.path.insert(0, str(ROOT / "backend"))
     from services import intent_classifier as ic  # noqa: E402
     from services import slot_extractor as se  # noqa: E402
@@ -125,7 +97,6 @@ def predict_chains(
     out: list[dict[str, Any]] = []
     for row in rows:
         text = row["text"]
-        # Active-space pool: union of every segment's gold slots.
         gold_union: dict[str, Any] = {}
         for seg in row.get("segments") or []:
             for k, v in (seg.get("slots") or {}).items():
@@ -136,7 +107,6 @@ def predict_chains(
         pred = clf.predict(text)
         boundary_offsets: list[int] = pred[3] if len(pred) > 3 else []
 
-        # Split per predicted boundary; classify each segment.
         from services import voice_intent as vi  # noqa: PLC0415, E402
         segments = vi._split_at_offsets(text, boundary_offsets)
         seg_preds: list[dict[str, Any]] = []
@@ -155,32 +125,6 @@ def predict_chains(
             }
             seg_preds.append({"intent": seg_intent, "slots": seg_slots})
         out.append({"boundary_offsets": boundary_offsets, "segments": seg_preds})
-    return out
-
-
-async def predict_groq(rows: list[dict[str, Any]]) -> list[tuple[str, dict[str, Any]]]:
-    sys.path.insert(0, str(ROOT / "backend"))
-    from services import voice_intent  # type: ignore[import-not-found]  # noqa: E402
-
-    out: list[tuple[str, dict[str, Any]]] = []
-    for row in rows:
-        ctx = {"active_labels": [], "robot_pose": {"x": 0, "y": 0, "theta": 0}, "map_name": ""}
-        try:
-            r = await voice_intent._classify_with_tools(row["text"], ctx)
-            intent = r.get("intent", "UNKNOWN")
-            params = r.get("params") or {}
-            slots = {
-                k: v
-                for k, v in params.items()
-                if k in {"name", "old_name", "new_name", "target", "radius"}
-            }
-            # Groq uses "target" for NAVIGATE; for slot accuracy that
-            # parallels our model's "name", treat them as same field
-            # only when comparing NAVIGATE.
-            out.append((intent, slots))
-        except Exception as exc:  # noqa: BLE001
-            log.warning("groq call failed for %r: %s", row["text"], exc)
-            out.append(("UNKNOWN", {}))
     return out
 
 
@@ -221,8 +165,6 @@ def report_slots(
     pred_slots: list[dict[str, Any]],
     pred_intents: list[str],
 ) -> None:
-    """Per-intent name exact-match accuracy. Only counts rows that have a
-    gold slot for the intent in question."""
     log.info("=== SLOTS %s ===", name)
     by_intent: dict[str, list[bool]] = defaultdict(list)
     for row, p_slots, p_intent in zip(rows, pred_slots, pred_intents):
@@ -231,10 +173,8 @@ def report_slots(
             continue
         intent = row["intent"]
         if intent != p_intent:
-            # Intent wrong → all slot fields wrong by definition.
             by_intent[intent].append(False)
             continue
-        # Compare every gold key. Case-insensitive equality on string slots.
         ok = True
         for k, v in gold_slots.items():
             if k not in {"name", "old_name", "new_name"}:
@@ -263,10 +203,6 @@ def report_chains(
     rows: list[dict[str, Any]],
     preds: list[dict[str, Any]],
 ) -> None:
-    """Multi-step eval. Reports:
-    - boundary detection F1 (per row: did the model find the right N markers?)
-    - chain accuracy (every segment's intent matches gold)
-    - per-segment intent confusion summary."""
     log.info("=== CHAINS ===")
     if not rows:
         log.info("  (no chain rows in eval set)")
@@ -281,9 +217,6 @@ def report_chains(
     for row, pred in zip(rows, preds):
         gold_markers = set(row.get("chain_markers") or [])
         pred_markers = set(pred.get("boundary_offsets") or [])
-        # Permissive: a predicted offset counts as TP if it lands within
-        # ±3 chars of a gold offset (subword tokenisation can land 1–2
-        # chars off the word boundary).
         used: set[int] = set()
         for p in pred_markers:
             hit = next((g for g in gold_markers if abs(g - p) <= 3 and g not in used), None)
@@ -294,7 +227,6 @@ def report_chains(
                 boundary_fp += 1
         boundary_fn += len(gold_markers - used)
 
-        # Per-segment intent comparison (order matters).
         gold_segs = row.get("segments") or []
         pred_segs = pred.get("segments") or []
         all_match = len(gold_segs) == len(pred_segs)
@@ -322,7 +254,6 @@ def report_chains(
 
 async def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--compare-groq", action="store_true")
     ap.add_argument("--model-dir", type=Path, default=MODEL_DIR)
     ap.add_argument("--data", type=Path, default=EVAL_PATH,
                     help="path to a .jsonl eval set (defaults to intents_eval.jsonl)")
@@ -333,7 +264,6 @@ async def main() -> None:
         sys.exit(1)
     log.info("eval data: %s", args.data)
     all_rows = load_jsonl(args.data)
-    # Chain rows carry a `segments` list; single-intent rows don't.
     chain_rows = [r for r in all_rows if r.get("segments")]
     single_rows = [r for r in all_rows if not r.get("segments")]
     gold_intents = [r["intent"] for r in single_rows]
@@ -356,13 +286,6 @@ async def main() -> None:
     if chain_rows:
         chain_preds = predict_chains(args.model_dir, chain_rows)
         report_chains(chain_rows, chain_preds)
-
-    if args.compare_groq:
-        groq_results = await predict_groq(single_rows)
-        groq_intents = [r[0] for r in groq_results]
-        groq_slots = [r[1] for r in groq_results]
-        report_intents("Groq Llama baseline", gold_intents, groq_intents, labels)
-        report_slots("Groq Llama baseline", single_rows, groq_slots, groq_intents)
 
 
 if __name__ == "__main__":

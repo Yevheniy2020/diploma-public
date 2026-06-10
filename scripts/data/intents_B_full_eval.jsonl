@@ -1,0 +1,234 @@
+{"text": "drive forward two meters", "intent": "DRIVE_RELATIVE", "lang": "en"}
+{"text": "повернись три рази ліворуч", "intent": "ROTATE", "lang": "uk"}
+{"text": "stop robot", "intent": "STOP", "lang": "en"}
+{"text": "прямуй до кабінету два", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "what's the current time", "intent": "UNKNOWN", "lang": "en"}
+{"text": "зупинись на хвилю", "intent": "STOP", "lang": "uk"}
+{"text": "видали кабінет 2", "intent": "DELETE_SPACE", "lang": "uk", "slots": {"name": "кабінет 2"}}
+{"text": "drive me home", "intent": "RETURN_HOME", "lang": "en"}
+{"text": "їдь на точку номер один", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "can I know the time now", "intent": "UNKNOWN", "lang": "en"}
+{"text": "трохи праворуч", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "Прямо и до кимнаты.", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "turn 180 degrees", "intent": "ROTATE", "lang": "en"}
+{"text": "what's your status", "intent": "UNKNOWN", "lang": "en"}
+{"text": "remove point 1", "intent": "DELETE_SPACE", "lang": "en", "slots": {"name": "point 1"}}
+{"text": "хай спальня буде кімната", "intent": "RENAME_SPACE", "lang": "uk", "slots": {"old_name": "спальня", "new_name": "кімната"}}
+{"text": "i'd like to remove the balcony tag", "intent": "DELETE_SPACE", "lang": "en", "slots": {"name": "balcony"}}
+{"text": "зроби крок назад один метр", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "поїдь 50 сантиметрів вперед", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "зміни ім'я коридору на хол", "intent": "RENAME_SPACE", "lang": "uk", "slots": {"old_name": "коридор", "new_name": "хол"}}
+{"text": "go 180 degrees around", "intent": "ROTATE", "lang": "en"}
+{"text": "повернись у вихідну точку", "intent": "RETURN_HOME", "lang": "uk"}
+{"text": "прямуй туди де відбувається приготування", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "розвертась на півкруга", "intent": "ROTATE", "lang": "uk"}
+{"text": "take me to the kitchen", "intent": "NAVIGATE", "lang": "en"}
+{"text": "що ти можеш робити", "intent": "UNKNOWN", "lang": "uk"}
+{"text": "please drive two meters forward", "intent": "DRIVE_RELATIVE", "lang": "en"}
+{"text": "Опустись на пів метра нижче балкона", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "move to the point 1", "intent": "NAVIGATE", "lang": "en"}
+{"text": "move to bedroom", "intent": "NAVIGATE", "lang": "en"}
+{"text": "rotate ninety degrees on your right side", "intent": "ROTATE", "lang": "en"}
+{"text": "перейменуй кухню в їдальня будь ласка", "intent": "RENAME_SPACE", "lang": "uk", "slots": {"old_name": "кухню", "new_name": "їдальня"}}
+{"text": "rename the kitchen marker to dining", "intent": "RENAME_SPACE", "lang": "en", "slots": {"old_name": "kitchen", "new_name": "dining"}}
+{"text": "зроби праворуч поворот", "intent": "ROTATE", "lang": "uk"}
+{"text": "can you describe what you can do", "intent": "UNKNOWN", "lang": "en"}
+{"text": "направо ще раз поверни", "intent": "ROTATE", "lang": "uk"}
+{"text": "Зроби крут", "intent": "ROTATE", "lang": "uk"}
+{"text": "please go back to base", "intent": "RETURN_HOME", "lang": "en"}
+{"text": "їдь вперед на три метри", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "thanks so much", "intent": "UNKNOWN", "lang": "en"}
+{"text": "move left by fifty centimeters", "intent": "DRIVE_RELATIVE", "lang": "en"}
+{"text": "чотири рази проїдь по метру вперед", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "зроби два праворуч", "intent": "ROTATE", "lang": "uk"}
+{"text": "додому поверни", "intent": "RETURN_HOME", "lang": "uk"}
+{"text": "go back to start right away", "intent": "RETURN_HOME", "lang": "en"}
+{"text": "Рухась униз на пів метра від того балкона", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "хм що робити", "intent": "UNKNOWN", "lang": "uk"}
+{"text": "прямуй до кухні наліво не потрібно", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "turn counter-clockwise", "intent": "ROTATE", "lang": "en"}
+{"text": "please go to the corridor", "intent": "NAVIGATE", "lang": "en"}
+{"text": "please take me back to start", "intent": "RETURN_HOME", "lang": "en"}
+{"text": "go ninety degrees right", "intent": "ROTATE", "lang": "en"}
+{"text": "Будь ласка, їдь прямо в кімнату", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "can you turn left", "intent": "ROTATE", "lang": "en"}
+{"text": "go a little bit to the right", "intent": "DRIVE_RELATIVE", "lang": "en"}
+{"text": "будь ласка, їдь ліворуч півметра", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "поверни праворуч на 90 градусів", "intent": "ROTATE", "lang": "uk"}
+{"text": "будь ласка поїдь на кухню", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "move a little to the right", "intent": "DRIVE_RELATIVE", "lang": "en"}
+{"text": "від кухні поверни південніше на один метр", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "як життя", "intent": "UNKNOWN", "lang": "uk"}
+{"text": "thanks", "intent": "UNKNOWN", "lang": "en"}
+{"text": "hold steady", "intent": "STOP", "lang": "en"}
+{"text": "зміщайся у напрямку право", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "good morning", "intent": "UNKNOWN", "lang": "en"}
+{"text": "umm", "intent": "UNKNOWN", "lang": "en"}
+{"text": "move forward now", "intent": "DRIVE_RELATIVE", "lang": "en"}
+{"text": "stop driving", "intent": "STOP", "lang": "en"}
+{"text": "поїхати у вітальню", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "добрий ранок", "intent": "UNKNOWN", "lang": "uk"}
+{"text": "вернись домой", "intent": "RETURN_HOME", "lang": "uk"}
+{"text": "їїїї", "intent": "UNKNOWN", "lang": "uk"}
+{"text": "can you go 1.5 meters backwards", "intent": "DRIVE_RELATIVE", "lang": "en"}
+{"text": "go corridor please", "intent": "NAVIGATE", "lang": "en"}
+{"text": "uh", "intent": "UNKNOWN", "lang": "en"}
+{"text": "їдь наліво", "intent": "ROTATE", "lang": "uk"}
+{"text": "can you tell me what you can do", "intent": "UNKNOWN", "lang": "en"}
+{"text": "зроби поворот на чверть", "intent": "ROTATE", "lang": "uk"}
+{"text": "halt movement", "intent": "STOP", "lang": "en"}
+{"text": "move in a counter-clockwise direction", "intent": "ROTATE", "lang": "en"}
+{"text": "зараз же зупинись", "intent": "STOP", "lang": "uk"}
+{"text": "please remove kitchen label", "intent": "DELETE_SPACE", "lang": "en", "slots": {"name": "kitchen"}}
+{"text": "відстань один метр назад", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "go 45 degrees to the left", "intent": "ROTATE", "lang": "en"}
+{"text": "розвернись будь ласка", "intent": "ROTATE", "lang": "uk"}
+{"text": "can you drive to the balcony", "intent": "NAVIGATE", "lang": "en"}
+{"text": "проїжджай до балкону", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "перейменуй текучу базу на старт", "intent": "RENAME_SPACE", "lang": "uk", "slots": {"old_name": "базу", "new_name": "старт"}}
+{"text": "Будь ласка, стань на півметра нижче того балкона", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "поїдь півтора метри назад", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "рухайся вперед будь ласка", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "поїдь на базу", "intent": "RETURN_HOME", "lang": "uk"}
+{"text": "Видали мітку кухня будь ласка", "intent": "DELETE_SPACE", "lang": "uk", "slots": {"name": "кухня"}}
+{"text": "go left to the kitchen", "intent": "NAVIGATE", "lang": "en"}
+{"text": "please hold position", "intent": "STOP", "lang": "en"}
+{"text": "зроби поворот кругом", "intent": "ROTATE", "lang": "uk"}
+{"text": "стоп, негайно", "intent": "STOP", "lang": "uk"}
+{"text": "Видалити мітку їдальня 2 необхідно", "intent": "DELETE_SPACE", "lang": "uk", "slots": {"name": "їдальня 2"}}
+{"text": "зупинись одразу", "intent": "STOP", "lang": "uk"}
+{"text": "let the base label be called start", "intent": "RENAME_SPACE", "lang": "en", "slots": {"old_name": "base", "new_name": "start"}}
+{"text": "їдь на балкон будь ласка", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "go back home base", "intent": "RETURN_HOME", "lang": "en"}
+{"text": "rotate to the left side", "intent": "ROTATE", "lang": "en"}
+{"text": "поїдь до стартової точки", "intent": "RETURN_HOME", "lang": "uk"}
+{"text": "чудового ранку", "intent": "UNKNOWN", "lang": "uk"}
+{"text": "Поїхати до їдальні", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "Крутись!", "intent": "ROTATE", "lang": "uk"}
+{"text": "Крутись вже", "intent": "ROTATE", "lang": "uk"}
+{"text": "Рухайся прямо в кімнату", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "Повернись", "intent": "ROTATE", "lang": "uk"}
+{"text": "Рухайся нащукімноти.", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "Go to the kitchen.", "intent": "NAVIGATE", "lang": "en"}
+{"text": "почни записувати кімнату офіс", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "офіс"}}
+{"text": "почни записувати кімнату зала", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "зала"}}
+{"text": "обведи периметр кухня", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "кухня"}}
+{"text": "починаю малювати кімнату кабінет", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "кабінет"}}
+{"text": "запиши нову кімнату будуар", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "будуар"}}
+{"text": "розпочати кімнату тераса", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "тераса"}}
+{"text": "скасуйте", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "збережи це", "intent": "FINISH_SPACE", "lang": "uk"}
+{"text": "скасуй малювання", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "малюй периметр тренажерка", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "тренажерка"}}
+{"text": "that is it", "intent": "FINISH_SPACE", "lang": "en"}
+{"text": "почни обводити кімнату їдальня", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "їдальня"}}
+{"text": "forget it", "intent": "CANCEL_SPACE", "lang": "en"}
+{"text": "відмінити малювання", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "finish", "intent": "FINISH_SPACE", "lang": "en"}
+{"text": "запиши нову кімнату спальня", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "спальня"}}
+{"text": "submit", "intent": "FINISH_SPACE", "lang": "en"}
+{"text": "скасуй чернетку", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "стартуй кімнату мансарда", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "мансарда"}}
+{"text": "починаю малювати кімнату ванна", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "ванна"}}
+{"text": "почни малювати кімнату ванна", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "ванна"}}
+{"text": "хай спальня буде ділянка", "intent": "RENAME_SPACE", "lang": "uk", "slots": {"old_name": "спальня", "new_name": "кімната"}}
+{"text": "почни записувати область офіс", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "офіс"}}
+{"text": "почни записувати мітку зала", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "зала"}}
+{"text": "починаю малювати зону кабінет", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "кабінет"}}
+{"text": "запиши нову зону будуар", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "будуар"}}
+{"text": "розпочати зону тераса", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "тераса"}}
+{"text": "почни обводити ділянку їдальня", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "їдальня"}}
+{"text": "запиши нову зону спальня", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "спальня"}}
+{"text": "стартуй область мансарда", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "мансарда"}}
+{"text": "починаю малювати зону ванна", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "ванна"}}
+{"text": "почни малювати зону ванна", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "ванна"}}
+{"text": "go 45 degrees to the left then go a little bit to the right", "intent": "ROTATE", "lang": "en", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [26]}
+{"text": "рухайся вперед будь ласка і рухайся нащукімноти", "intent": "DRIVE_RELATIVE", "lang": "uk", "segments": [{"intent": "DRIVE_RELATIVE", "slots": {}}, {"intent": "NAVIGATE", "slots": {}}], "chain_markers": [26]}
+{"text": "turn counter-clockwise and drive forward two meters then go to the kitchen", "intent": "ROTATE", "lang": "en", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}, {"intent": "NAVIGATE", "slots": {}}], "chain_markers": [23, 52]}
+{"text": "Рухайся нащукімноти, потім зупинись одразу", "intent": "NAVIGATE", "lang": "uk", "segments": [{"intent": "NAVIGATE", "slots": {}}, {"intent": "STOP", "slots": {}}], "chain_markers": [21]}
+{"text": "їдь наліво та поїдь 50 сантиметрів вперед", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [11]}
+{"text": "go ninety degrees right then drive forward two meters", "intent": "ROTATE", "lang": "en", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [24]}
+{"text": "Повернись і рухайся вперед будь ласка", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [10]}
+{"text": "turn counter-clockwise then can you go 1.5 meters backwards", "intent": "ROTATE", "lang": "en", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [23]}
+{"text": "повернись три рази ліворуч після цього трохи праворуч, потім рухайся нащукімноти", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}, {"intent": "NAVIGATE", "slots": {}}], "chain_markers": [27, 55]}
+{"text": "зроби праворуч поворот та рухайся вперед будь ласка", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [23]}
+{"text": "move left by fifty centimeters then go to the kitchen", "intent": "DRIVE_RELATIVE", "lang": "en", "segments": [{"intent": "DRIVE_RELATIVE", "slots": {}}, {"intent": "NAVIGATE", "slots": {}}], "chain_markers": [31]}
+{"text": "прямуй туди де відбувається приготування після цього зараз же зупинись", "intent": "NAVIGATE", "lang": "uk", "segments": [{"intent": "NAVIGATE", "slots": {}}, {"intent": "STOP", "slots": {}}], "chain_markers": [41]}
+{"text": "зроби поворот кругом потім відстань один метр назад, потім проїжджай до балкону", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}, {"intent": "NAVIGATE", "slots": {}}], "chain_markers": [21, 53]}
+{"text": "поверни праворуч на 90 градусів після цього відстань один метр назад", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [32]}
+{"text": "поверни праворуч на 90 градусів після цього зміщайся у напрямку право", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [32]}
+{"text": "Поїхати до їдальні після цього зупинись одразу", "intent": "NAVIGATE", "lang": "uk", "segments": [{"intent": "NAVIGATE", "slots": {}}, {"intent": "STOP", "slots": {}}], "chain_markers": [19]}
+{"text": "розвертась на півкруга після цього рухайся вперед будь ласка", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [23]}
+{"text": "go ninety degrees right and then move left by fifty centimeters", "intent": "ROTATE", "lang": "en", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [24]}
+{"text": "їдь наліво і далі чотири рази проїдь по метру вперед", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [11]}
+{"text": "направо ще раз поверни і далі зроби крок назад один метр", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [23]}
+{"text": "go a little bit to the right then go to the kitchen", "intent": "DRIVE_RELATIVE", "lang": "en", "segments": [{"intent": "DRIVE_RELATIVE", "slots": {}}, {"intent": "NAVIGATE", "slots": {}}], "chain_markers": [29]}
+{"text": "rotate ninety degrees on your right side and move a little to the right", "intent": "ROTATE", "lang": "en", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [41]}
+{"text": "поверни праворуч на 90 градусів потім зміщайся у напрямку право", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [32]}
+{"text": "будь ласка, їдь ліворуч півметра та прямуй до кабінету два", "intent": "DRIVE_RELATIVE", "lang": "uk", "segments": [{"intent": "DRIVE_RELATIVE", "slots": {}}, {"intent": "NAVIGATE", "slots": {}}], "chain_markers": [33]}
+{"text": "go ninety degrees right and go a little bit to the right", "intent": "ROTATE", "lang": "en", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [24]}
+{"text": "rotate ninety degrees on your right side and then drive forward two meters", "intent": "ROTATE", "lang": "en", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [41]}
+{"text": "Зроби крут після цього поїдь півтора метри назад", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [11]}
+{"text": "зміщайся у напрямку право, потім прямуй туди де відбувається приготування", "intent": "DRIVE_RELATIVE", "lang": "uk", "segments": [{"intent": "DRIVE_RELATIVE", "slots": {}}, {"intent": "NAVIGATE", "slots": {}}], "chain_markers": [27]}
+{"text": "зроби праворуч поворот після цього трохи праворуч", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [23]}
+{"text": "can you go 1.5 meters backwards and move to the point 1", "intent": "DRIVE_RELATIVE", "lang": "en", "segments": [{"intent": "DRIVE_RELATIVE", "slots": {}}, {"intent": "NAVIGATE", "slots": {}}], "chain_markers": [32]}
+{"text": "turn counter-clockwise then please drive two meters forward", "intent": "ROTATE", "lang": "en", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [23]}
+{"text": "зроби поворот на чверть, потім поїдь півтора метри назад", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [25]}
+{"text": "зроби поворот кругом після цього поїдь 50 сантиметрів вперед", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [21]}
+{"text": "can you turn left and then move a little to the right", "intent": "ROTATE", "lang": "en", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [18]}
+{"text": "rotate ninety degrees on your right side and drive forward two meters", "intent": "ROTATE", "lang": "en", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [41]}
+{"text": "go ninety degrees right then move left by fifty centimeters", "intent": "ROTATE", "lang": "en", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [24]}
+{"text": "направо ще раз поверни і прямуй до кабінету два", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "NAVIGATE", "slots": {}}], "chain_markers": [23]}
+{"text": "Повернись і рухайся вперед будь ласка", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [10]}
+{"text": "направо ще раз поверни після цього зроби крок назад один метр після цього прямуй туди де відбувається приготування", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}, {"intent": "NAVIGATE", "slots": {}}], "chain_markers": [23, 62]}
+{"text": "зроби поворот кругом та будь ласка, їдь ліворуч півметра", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [21]}
+{"text": "Крутись вже, потім рухайся вперед будь ласка", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [13]}
+{"text": "зроби два праворуч після цього їдь вперед на три метри", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [19]}
+{"text": "move in a counter-clockwise direction then please drive two meters forward", "intent": "ROTATE", "lang": "en", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [38]}
+{"text": "їдь наліво потім поїдь півтора метри назад", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [11]}
+{"text": "move to bedroom then stop robot", "intent": "NAVIGATE", "lang": "en", "segments": [{"intent": "NAVIGATE", "slots": {}}, {"intent": "STOP", "slots": {}}], "chain_markers": [16]}
+{"text": "turn counter-clockwise and please drive two meters forward", "intent": "ROTATE", "lang": "en", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [23]}
+{"text": "поїдь півтора метри назад і будь ласка, стань на півметра нижче того балкона", "intent": "DRIVE_RELATIVE", "lang": "uk", "segments": [{"intent": "DRIVE_RELATIVE", "slots": {}}, {"intent": "NAVIGATE", "slots": {}}], "chain_markers": [26]}
+{"text": "розвертась на півкруга і поїдь 50 сантиметрів вперед", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [23]}
+{"text": "please go to the corridor and halt movement", "intent": "NAVIGATE", "lang": "en", "segments": [{"intent": "NAVIGATE", "slots": {}}, {"intent": "STOP", "slots": {}}], "chain_markers": [26]}
+{"text": "Поїхати до їдальні потім зупинись на хвилю", "intent": "NAVIGATE", "lang": "uk", "segments": [{"intent": "NAVIGATE", "slots": {}}, {"intent": "STOP", "slots": {}}], "chain_markers": [19]}
+{"text": "От зроби праворуч поворот а далі поїдь півтора метри назад", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [26]}
+{"text": "розвертась на півкруга та їдь вперед на три метри", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [23]}
+{"text": "зроби крок назад один метр і прямуй до кухні наліво не потрібно", "intent": "DRIVE_RELATIVE", "lang": "uk", "segments": [{"intent": "DRIVE_RELATIVE", "slots": {}}, {"intent": "NAVIGATE", "slots": {}}], "chain_markers": [27]}
+{"text": "move forward now, then move in a counter-clockwise direction", "intent": "DRIVE_RELATIVE", "lang": "en", "segments": [{"intent": "DRIVE_RELATIVE", "slots": {}}, {"intent": "ROTATE", "slots": {}}], "chain_markers": [18]}
+{"text": "Ну поїдь півтора метри назад а далі прямуй до кухні наліво не потрібно", "intent": "DRIVE_RELATIVE", "lang": "uk", "segments": [{"intent": "DRIVE_RELATIVE", "slots": {}}, {"intent": "NAVIGATE", "slots": {}}], "chain_markers": [29]}
+{"text": "будь ласка, їдь ліворуч півметра після цього прямо и до кимнаты", "intent": "DRIVE_RELATIVE", "lang": "uk", "segments": [{"intent": "DRIVE_RELATIVE", "slots": {}}, {"intent": "NAVIGATE", "slots": {}}], "chain_markers": [33]}
+{"text": "please drive two meters forward, then can you turn left", "intent": "DRIVE_RELATIVE", "lang": "en", "segments": [{"intent": "DRIVE_RELATIVE", "slots": {}}, {"intent": "ROTATE", "slots": {}}], "chain_markers": [33]}
+{"text": "розвертась на півкруга а далі рухайся вперед будь ласка", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [23]}
+{"text": "Так їдь вперед на три метри а далі проїжджай до балкону", "intent": "DRIVE_RELATIVE", "lang": "uk", "segments": [{"intent": "DRIVE_RELATIVE", "slots": {}}, {"intent": "NAVIGATE", "slots": {}}], "chain_markers": [28]}
+{"text": "Ну від кухні поверни південніше на один метр а потім вернись домой", "intent": "NAVIGATE", "lang": "uk", "segments": [{"intent": "NAVIGATE", "slots": {}}, {"intent": "RETURN_HOME", "slots": {}}], "chain_markers": [45]}
+{"text": "please drive two meters forward then take me to the kitchen", "intent": "DRIVE_RELATIVE", "lang": "en", "segments": [{"intent": "DRIVE_RELATIVE", "slots": {}}, {"intent": "NAVIGATE", "slots": {}}], "chain_markers": [32]}
+{"text": "move a little to the right, then move to bedroom", "intent": "DRIVE_RELATIVE", "lang": "en", "segments": [{"intent": "DRIVE_RELATIVE", "slots": {}}, {"intent": "NAVIGATE", "slots": {}}], "chain_markers": [28]}
+{"text": "turn 180 degrees, then move a little to the right", "intent": "ROTATE", "lang": "en", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [18]}
+{"text": "зроби праворуч поворот потім відстань один метр назад", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [23]}
+{"text": "розвернись будь ласка потім зміщайся у напрямку право а потім прямуй до кухні наліво не потрібно", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}, {"intent": "NAVIGATE", "slots": {}}], "chain_markers": [22, 54]}
+{"text": "Опустись на пів метра нижче балкона потім стоп, негайно", "intent": "NAVIGATE", "lang": "uk", "segments": [{"intent": "NAVIGATE", "slots": {}}, {"intent": "STOP", "slots": {}}], "chain_markers": [36]}
+{"text": "Так відстань один метр назад потім рухась униз на пів метра від того балкона", "intent": "DRIVE_RELATIVE", "lang": "uk", "segments": [{"intent": "DRIVE_RELATIVE", "slots": {}}, {"intent": "NAVIGATE", "slots": {}}], "chain_markers": [29]}
+{"text": "Будь ласка, їдь прямо в кімнату, а далі прямуй до кабінету два", "intent": "NAVIGATE", "lang": "uk", "segments": [{"intent": "NAVIGATE", "slots": {}}, {"intent": "NAVIGATE", "slots": {}}], "chain_markers": [33]}
+{"text": "rotate to the left side then go a little bit to the right", "intent": "ROTATE", "lang": "en", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [24]}
+{"text": "чотири рази проїдь по метру вперед а далі крутись", "intent": "DRIVE_RELATIVE", "lang": "uk", "segments": [{"intent": "DRIVE_RELATIVE", "slots": {}}, {"intent": "ROTATE", "slots": {}}], "chain_markers": [35]}
+{"text": "розвертась на півкруга а далі їдь вперед на три метри", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [23]}
+{"text": "Крутись потім поїдь 50 сантиметрів вперед", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [8]}
+{"text": "Зроби крут а далі будь ласка, їдь ліворуч півметра", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [11]}
+{"text": "зроби крок назад один метр а далі крутись вже", "intent": "DRIVE_RELATIVE", "lang": "uk", "segments": [{"intent": "DRIVE_RELATIVE", "slots": {}}, {"intent": "ROTATE", "slots": {}}], "chain_markers": [27]}
+{"text": "go ninety degrees right then move a little to the right", "intent": "ROTATE", "lang": "en", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [24]}
+{"text": "розвернись будь ласка, а потім зміщайся у напрямку право", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [23]}
+{"text": "Зроби крут а потім відстань один метр назад", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [11]}
+{"text": "rotate to the left side, then move forward now", "intent": "ROTATE", "lang": "en", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [25]}
+{"text": "прямуй туди де відбувається приготування, а далі зупинись одразу", "intent": "NAVIGATE", "lang": "uk", "segments": [{"intent": "NAVIGATE", "slots": {}}, {"intent": "STOP", "slots": {}}], "chain_markers": [42]}
+{"text": "А крутись вже після того від кухні поверни південніше на один метр", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "NAVIGATE", "slots": {}}], "chain_markers": [14]}
+{"text": "Зроби крут, а далі прямуй туди де відбувається приготування", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "NAVIGATE", "slots": {}}], "chain_markers": [12]}
+{"text": "move to bedroom then go to the kitchen", "intent": "NAVIGATE", "lang": "en", "segments": [{"intent": "NAVIGATE", "slots": {}}, {"intent": "NAVIGATE", "slots": {}}], "chain_markers": [16]}
+{"text": "їдь наліво, а далі трохи праворуч", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [12]}
+{"text": "повернись три рази ліворуч і далі чотири рази проїдь по метру вперед", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [27]}
+{"text": "зроби поворот на чверть а потім будь ласка, їдь ліворуч півметра", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [24]}
+{"text": "От їдь вперед на три метри після цього будь ласка поїдь на кухню", "intent": "DRIVE_RELATIVE", "lang": "uk", "segments": [{"intent": "DRIVE_RELATIVE", "slots": {}}, {"intent": "NAVIGATE", "slots": {}}], "chain_markers": [27]}
+{"text": "Крутись вже, а потім зроби крок назад один метр", "intent": "ROTATE", "lang": "uk", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [13]}
+{"text": "Будь ласка, їдь прямо в кімнату після того їдь на точку номер один", "intent": "NAVIGATE", "lang": "uk", "segments": [{"intent": "NAVIGATE", "slots": {}}, {"intent": "NAVIGATE", "slots": {}}], "chain_markers": [32]}
+{"text": "А їдь вперед на три метри, а далі прямуй до кухні наліво не потрібно", "intent": "DRIVE_RELATIVE", "lang": "uk", "segments": [{"intent": "DRIVE_RELATIVE", "slots": {}}, {"intent": "NAVIGATE", "slots": {}}], "chain_markers": [27]}
+{"text": "go ninety degrees right and please drive two meters forward", "intent": "ROTATE", "lang": "en", "segments": [{"intent": "ROTATE", "slots": {}}, {"intent": "DRIVE_RELATIVE", "slots": {}}], "chain_markers": [24]}

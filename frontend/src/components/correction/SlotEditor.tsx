@@ -1,23 +1,13 @@
-// Per-intent slot editor. Default-exported so Vite's React Fast Refresh
-// tracks it as a single component module (mixing a default-exported
-// component with another named-exported component in the same file
-// silently disables HMR for that file).
 import { useT } from '../../i18n'
 import type { Intent } from '../../types'
 
 export interface SlotState {
-  // ROTATE
   delta_deg: number
-  // DRIVE_RELATIVE
   direction: 'forward' | 'backward' | 'left' | 'right'
   distance_m: number
-  // NAVIGATE / DELETE_SPACE
   target_or_name: string
-  // RENAME_SPACE (old_name + new_name)
   new_name: string
   old_name: string
-  // Legacy — kept on the interface so CorrectionDialog's seed object
-  // doesn't need a parallel rewrite, but no UI references it anymore.
   radius: number
 }
 
@@ -51,7 +41,6 @@ function SlotEditor({ intent, slots, setSlots, labels }: Props) {
   const t = useT()
   const set = (patch: Partial<SlotState>) => setSlots({ ...slots, ...patch })
 
-  // Paramless intents: no slot UI needed.
   if (
     intent === 'STOP' ||
     intent === 'RETURN_HOME' ||
@@ -185,8 +174,6 @@ function SlotEditor({ intent, slots, setSlots, labels }: Props) {
       ) : null}
 
       {intent === 'START_SPACE' ? (
-        // Free-text input — the operator is naming a NEW space, so a
-        // dropdown of existing space names would be wrong here.
         <label className="flex items-center gap-2">
           <span className="font-mono text-stone-700 w-20 shrink-0">name</span>
           <input

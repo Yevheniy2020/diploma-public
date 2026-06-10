@@ -9,10 +9,6 @@ interface State {
   error: Error | null
 }
 
-// Class-based boundary because React Hooks have no equivalent. Wraps risky
-// subtrees (the 3D Canvas, the 2D scene) so a thrown render error doesn't
-// blank the whole app — the user sees a recoverable banner with a reset
-// button and the rest of the operator console keeps working.
 export default class ErrorBoundary extends Component<Props, State> {
   state: State = { error: null }
 

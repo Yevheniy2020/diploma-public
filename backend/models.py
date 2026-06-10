@@ -11,17 +11,12 @@ class Intent(str, Enum):
     ROTATE = "ROTATE"
     DELETE_SPACE = "DELETE_SPACE"
     RENAME_SPACE = "RENAME_SPACE"
-    # Voice-perimeter space drafting. Recording itself happens in the
-    # frontend; these three intents just signal "begin", "save", "discard".
     START_SPACE = "START_SPACE"
     FINISH_SPACE = "FINISH_SPACE"
     CANCEL_SPACE = "CANCEL_SPACE"
     STOP = "STOP"
     RETURN_HOME = "RETURN_HOME"
     UNKNOWN = "UNKNOWN"
-    # Mid-confidence prediction awaiting operator confirmation. Frontend
-    # opens the CorrectionDialog and POSTs to /api/voice/feedback once the
-    # operator decides; the action is dispatched only on confirmation.
     UNCERTAIN = "UNCERTAIN"
 
 
@@ -120,9 +115,6 @@ class SpaceCreate(BaseModel):
 
 
 class SpaceUpdate(BaseModel):
-    """PATCH body for /api/spaces/{id}. Any subset of fields may be present;
-    omitted fields are left untouched. Setting `is_home=True` atomically
-    clears the flag on any other space of the same map."""
     name: Optional[str] = None
     is_home: Optional[bool] = None
 
@@ -154,8 +146,6 @@ class PlanResponse(BaseModel):
 
 
 class VoiceFollowUp(BaseModel):
-    """One pre-simulated step in a multi-action voice command. Frontend
-    queues these and dispatches each when the robot becomes idle."""
     intent: Intent
     params: dict[str, Any] = Field(default_factory=dict)
     action_result: dict[str, Any] = Field(default_factory=dict)
@@ -166,25 +156,10 @@ class VoiceResponse(BaseModel):
     params: dict[str, Any] = Field(default_factory=dict)
     action_result: dict[str, Any] = Field(default_factory=dict)
     follow_ups: list[VoiceFollowUp] = Field(default_factory=list)
-    # When intent == UNCERTAIN we expose the row id so the frontend can
-    # POST it back via /api/voice/feedback alongside the operator's verdict.
     command_log_id: Optional[int] = None
 
 
 class VoiceFeedbackRequest(BaseModel):
-    """Operator's verdict on an UNCERTAIN prediction. `was_correct=True`
-    causes the backend to dispatch the (optionally edited) intent + slot
-    params and return the resulting action_result; the `robot_pose`
-    carries the pose to dispatch from. `was_correct=False` records the
-    correction (with optional `corrected_intent` override) without
-    dispatching anything.
-
-    `corrected_params` lets the operator edit slot values before
-    confirming — e.g. predicted ROTATE delta_deg=90 but user really
-    wanted 360. When it differs from the model's prediction, the
-    (transcription → intent + params) pair is also saved into
-    learned_overrides so future occurrences short-circuit straight to
-    the corrected behaviour."""
     command_log_id: int
     was_correct: bool
     corrected_intent: Optional[Intent] = None
@@ -193,9 +168,6 @@ class VoiceFeedbackRequest(BaseModel):
 
 
 class VoiceFeedbackResponse(BaseModel):
-    """Mirror of VoiceResponse for the confirmation path. When the
-    operator confirms, this carries the dispatched action; when they
-    reject, only the bookkeeping fields are populated."""
     recorded: bool
     intent: Optional[Intent] = None
     params: dict[str, Any] = Field(default_factory=dict)
@@ -203,14 +175,12 @@ class VoiceFeedbackResponse(BaseModel):
 
 
 class FeedbackStats(BaseModel):
-    """Snapshot consumed by the operator console's training panel."""
     pending_count: int
     last_retrained_at: Optional[str] = None
-    retrain_state: str  # idle | running | completed | failed
+    retrain_state: str
 
 
 class CorrectionRow(BaseModel):
-    """One row from command_corrections, normalised for the UI list."""
     id: int
     transcription: str
     predicted_intent: str
@@ -220,13 +190,11 @@ class CorrectionRow(BaseModel):
     corrected_intent: Optional[str] = None
     corrected_params: Optional[dict[str, Any]] = None
     created_at: str
-    # Effective (intent, params) — what will go into the next retrain.
     effective_intent: str
     effective_params: dict[str, Any] = Field(default_factory=dict)
 
 
 class EditCorrectionRequest(BaseModel):
-    """PATCH body — both fields optional, missing = leave unchanged."""
     corrected_intent: Optional[Intent] = None
     corrected_params: Optional[dict[str, Any]] = None
 

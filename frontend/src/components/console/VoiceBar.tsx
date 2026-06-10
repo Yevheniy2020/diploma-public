@@ -1,6 +1,3 @@
-// Voice control column — vertical layout for the right sidebar.
-// Stacks: mic button, transcript card. Real LLM call (Groq Llama-4) runs
-// through the onAudio handler.
 import { useState } from 'react'
 import VoiceButton from '../VoiceButton'
 import { useT } from '../../i18n'
@@ -21,12 +18,6 @@ function VoiceBar({ onAudio, processing }: Props) {
   const setPendingCorrection = useAppStore((s) => s.setPendingCorrection)
   const [audioLevel, setAudioLevel] = useState(0)
 
-  // The trained model is sometimes confident AND wrong («крутись» got
-  // 0.99 ROTATE +90 even when the user wanted +360). Expose a manual
-  // «виправити останнє» button that opens CorrectionDialog with the
-  // last response's intent + params; the same modal handles both
-  // auto-uncertain and post-hoc corrections, just with a higher prefilled
-  // confidence number.
   const canCorrectLast =
     lastResp != null &&
     typeof lastResp.command_log_id === 'number' &&

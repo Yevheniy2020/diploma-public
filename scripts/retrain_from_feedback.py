@@ -1,27 +1,3 @@
-"""Active-learning retrain pipeline.
-
-Reads operator-confirmed (and operator-corrected) rows from
-`command_corrections`, folds them into a feedback seed file
-(`scripts/data/seeds_from_feedback.jsonl`, gitignored), and chains
-`generate_dataset.py` + `train_intent.py` to produce a fresh checkpoint
-in `backend/models/intent_classifier/`.
-
-Usage:
-    cd backend && .venv/bin/python ../scripts/retrain_from_feedback.py
-        # picks up new corrections, paraphrases, retrains
-    cd backend && .venv/bin/python ../scripts/retrain_from_feedback.py --dry
-        # only writes seeds_from_feedback.jsonl, skips paraphrase + train
-
-Idempotent: each run records the highest correction id processed in
-`scripts/data/last_processed_correction.txt`. Re-running picks up only
-new feedback rows.
-
-Filtering policy:
-  - was_correct=True               → keep (predicted_intent, predicted_params, transcription)
-  - was_correct=False, override IS NOT NULL → keep (corrected_intent, {}, transcription)
-                                        (slot info dropped — operator only fixed the intent)
-  - was_correct=False, override IS NULL    → skip (negative example without label is noise)
-"""
 from __future__ import annotations
 
 import argparse
@@ -45,9 +21,6 @@ FEEDBACK_SEEDS = DATA_DIR / "seeds_from_feedback.jsonl"
 CURSOR_FILE = DATA_DIR / "last_processed_correction.txt"
 LAST_RETRAINED_FILE = DATA_DIR / "last_retrained_at.txt"
 STATUS_FILE = DATA_DIR / "retrain_status.json"
-# Per-run scratch file consumed by generate_dataset.py --append-from. We
-# rewrite it on every run so paraphrase is scoped to ONLY the new
-# corrections — not the whole accumulated history.
 PENDING_SEEDS_FILE = DATA_DIR / "pending_seeds.jsonl"
 DB_PATH = ROOT / "backend" / "db.sqlite3"
 
@@ -57,8 +30,6 @@ def _now_iso() -> str:
 
 
 def write_status(phase: str, started_at: str, error: str | None = None) -> None:
-    """Atomic phase-update so the backend orchestrator can poll it.
-    `phase` ∈ {preparing, paraphrasing, training, done, failed}."""
     payload = {
         "phase": phase,
         "started_at": started_at,
@@ -128,19 +99,10 @@ def fetch_new_corrections(db_path: Path, after_id: int) -> list[dict[str, Any]]:
 
 
 def derive_seed_row(c: dict[str, Any]) -> dict[str, Any] | None:
-    """Convert one correction row into a seed-style JSONL entry, or None
-    if the row carries no usable label.
-
-    Operator-edited slots (`corrected_params`) win over the model's
-    `predicted_params`, so retraining sees the labels the operator
-    actually wanted, not the ones the model defaulted to."""
     text = c["transcription"]
     if c["was_correct"]:
         intent = c["corrected_intent"] or c["predicted_intent"]
         params = c["corrected_params"] or c["predicted_params"] or {}
-        # Only carry name-bearing slots forward; numeric slots
-        # (radius/distance/delta_deg) are recovered by the slot
-        # extractor at inference time via regex + learned_overrides.
         slots: dict[str, str] = {}
         for k in ("name", "old_name", "new_name"):
             v = params.get(k)
@@ -164,8 +126,6 @@ def derive_seed_row(c: dict[str, Any]) -> dict[str, Any] | None:
 
 
 def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
-    """Overwrite — used for the per-run pending file so each retrain
-    starts with a clean scratch of just-this-run's corrections."""
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8") as f:
         for r in rows:
@@ -180,14 +140,6 @@ def append_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
 
 
 def chain_retrain(started_at: str) -> None:
-    """Run generate_dataset.py + train_intent.py back to back. Status
-    is reported via the sidecar file so a watcher can poll progress.
-
-    When pending_seeds.jsonl exists (we wrote it earlier with this run's
-    new corrections only), we hand it to generate_dataset via
-    --append-from. That scopes paraphrase to just the new rows and
-    appends them to the existing intents.jsonl — vastly faster than
-    re-paraphrasing the entire ~200-seed corpus on every retrain."""
     backend_dir = ROOT / "backend"
     py = str(backend_dir / ".venv" / "bin" / "python")
     write_status("paraphrasing", started_at)
@@ -203,7 +155,6 @@ def chain_retrain(started_at: str) -> None:
         [py, str(ROOT / "scripts" / "train_intent.py"), "--epochs", "8"],
         cwd=backend_dir,
     )
-    # Pending file consumed — clean up so the next run starts empty.
     PENDING_SEEDS_FILE.unlink(missing_ok=True)
     LAST_RETRAINED_FILE.write_text(_now_iso(), encoding="utf-8")
     write_status("done", started_at)
@@ -242,12 +193,7 @@ def main() -> None:
                  len(corrections), len(seed_rows), skipped)
 
         if seed_rows:
-            # Long-lived history: every correction we've ever folded in.
             append_jsonl(FEEDBACK_SEEDS, seed_rows)
-            # Per-run scratch: ONLY this run's new rows. generate_dataset
-            # picks it up via --append-from and paraphrases just these,
-            # appending the result to existing intents.jsonl. Massive
-            # speed-up over re-paraphrasing the whole corpus each retrain.
             write_jsonl(PENDING_SEEDS_FILE, seed_rows)
             log.info("appended to %s, wrote scratch %s",
                      FEEDBACK_SEEDS.name, PENDING_SEEDS_FILE.name)

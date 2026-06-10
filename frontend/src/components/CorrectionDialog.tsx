@@ -1,10 +1,3 @@
-// Confirmation dialog for mid-confidence joint-classifier predictions.
-// Backend returns `intent === 'UNCERTAIN'` along with its best guess +
-// command_log_id; voiceDispatch parks it in the store; this dialog asks
-// the operator to confirm OR edit the intent + slot values before the
-// action runs. The corrected (intent, params) pair is also persisted as
-// a learned override so future occurrences of the same phrase
-// short-circuit straight to the corrected behaviour.
 import { useEffect, useMemo, useState } from 'react'
 import { sendVoiceFeedback } from '../api/client'
 import { useT } from '../i18n'
@@ -56,8 +49,6 @@ function CorrectionDialog() {
   })
   const [submitting, setSubmitting] = useState(false)
 
-  // When a new pending correction lands, prime form state from the
-  // model's prediction so the operator only edits what's wrong.
   useEffect(() => {
     if (!pending) return
     const p = pending.predicted_params
@@ -83,8 +74,6 @@ function CorrectionDialog() {
     setSubmitting(false)
   }
 
-  // Build the (intent, params) pair the operator just authored from the
-  // current form state. This is what we send to the backend on confirm.
   const composed = useMemo(() => {
     const params: Record<string, unknown> = {}
     switch (intent) {
@@ -109,7 +98,6 @@ function CorrectionDialog() {
         if (slots.target_or_name)
           params.name = slots.target_or_name.trim().toLowerCase()
         break
-      // FINISH_SPACE, CANCEL_SPACE, STOP, RETURN_HOME — no params.
       default:
         break
     }

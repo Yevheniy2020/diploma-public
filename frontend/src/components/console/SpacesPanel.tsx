@@ -27,8 +27,6 @@ function SpacesPanel() {
   const appendLog = useAppStore((s) => s.appendLog)
 
   const [busyId, setBusyId] = useState<number | null>(null)
-  // Pre-fill rename input on demand — kept local because rename is fast
-  // and doesn't need persistence across re-renders.
   const [renamingId, setRenamingId] = useState<number | null>(null)
   const [renameValue, setRenameValue] = useState('')
 
@@ -39,8 +37,6 @@ function SpacesPanel() {
     setBusyId(spaceId)
     const t0 = performance.now()
     try {
-      // Same convenience semantics as voice NAVIGATE: drive to the space's
-      // centroid; the planner will clamp into the polygon's interior.
       const goal = polygonCentroid(space.vertices)
       const r = await plan(currentMap.id, robot, goal)
       const ms = performance.now() - t0

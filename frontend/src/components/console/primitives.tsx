@@ -1,5 +1,3 @@
-// Small reusable bits for the operator console — kept in one file because
-// each is ~10 lines and they all share the same style language.
 import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 

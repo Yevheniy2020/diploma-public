@@ -1,0 +1,20 @@
+{"text": "відміни", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "перейменуй кухню в їдальня будь ласка", "intent": "RENAME_SPACE", "lang": "uk", "slots": {"old_name": "кухню", "new_name": "їдальня"}}
+{"text": "почати малювати кімнату кладова", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "кладова"}}
+{"text": "spin around", "intent": "ROTATE", "lang": "en"}
+{"text": "перейди в офіс", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "стій", "intent": "STOP", "lang": "uk"}
+{"text": "uhhh", "intent": "UNKNOWN", "lang": "en"}
+{"text": "починаю малювати кімнату спальня", "intent": "START_SPACE", "lang": "uk", "slots": {"name": "спальня"}}
+{"text": "закінчив", "intent": "FINISH_SPACE", "lang": "uk"}
+{"text": "закінчила", "intent": "FINISH_SPACE", "lang": "uk"}
+{"text": "повертайся на базу", "intent": "RETURN_HOME", "lang": "uk"}
+{"text": "navigate to the office", "intent": "NAVIGATE", "lang": "en"}
+{"text": "поверни на тридцять градусів", "intent": "ROTATE", "lang": "uk"}
+{"text": "точка 1 буде називатися старт", "intent": "RENAME_SPACE", "lang": "uk", "slots": {"old_name": "точка 1", "new_name": "старт"}}
+{"text": "котра година", "intent": "UNKNOWN", "lang": "uk"}
+{"text": "забери позначку спальня", "intent": "DELETE_SPACE", "lang": "uk", "slots": {"name": "спальня"}}
+{"text": "step left fifty centimeters", "intent": "DRIVE_RELATIVE", "lang": "en"}
+{"text": "скасувати", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "back up half a meter", "intent": "DRIVE_RELATIVE", "lang": "en"}
+{"text": "go to the kitchen", "intent": "NAVIGATE", "lang": "en"}

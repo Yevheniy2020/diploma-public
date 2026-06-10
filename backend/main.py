@@ -31,16 +31,14 @@ async def lifespan(_: FastAPI):
             clf = intent_classifier_module.IntentClassifier.load(settings.intent_model_dir)
             intent_classifier_module.set_classifier(clf)
         except Exception as exc:  # noqa: BLE001
-            # Don't crash the app — fall back to Groq for this run.
             _log.warning(
-                "intent classifier failed to load (%s) — falling back to Groq", exc
+                "intent classifier failed to load (%s) — voice commands will "
+                "return UNKNOWN until a model is present", exc
             )
     adapter = robot_adapter.init_adapter()
     try:
         yield
     finally:
-        # The HTTP adapter owns an httpx client; close it cleanly so
-        # unit-test runs and graceful shutdowns don't leak sockets.
         aclose = getattr(adapter, "aclose", None)
         if aclose is not None:
             await aclose()

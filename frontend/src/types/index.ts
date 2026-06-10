@@ -12,10 +12,6 @@ export type Intent =
   | 'UNKNOWN'
   | 'UNCERTAIN'
 
-// Intents the operator can pick when overriding an UNCERTAIN prediction.
-// UNCERTAIN itself is not selectable (it's the band, not a target).
-// UNKNOWN is added as a separate option in the dropdown rendering.
-// All 10 other Intent union members are user-selectable here.
 export const ACTION_INTENTS: Intent[] = [
   'NAVIGATE',
   'DRIVE_RELATIVE',
@@ -120,8 +116,6 @@ export interface VoiceResponse {
   params: Record<string, unknown>
   action_result: Record<string, unknown>
   follow_ups?: VoiceFollowUp[]
-  // Set when intent === 'UNCERTAIN'. Frontend POSTs this back to
-  // /api/voice/feedback with the operator's verdict.
   command_log_id?: number
 }
 
@@ -132,8 +126,6 @@ export interface VoiceFeedbackResponse {
   action_result?: Record<string, unknown>
 }
 
-// Mid-confidence prediction parked in the Zustand store while the
-// operator decides via CorrectionDialog.
 export interface PendingCorrection {
   command_log_id: number
   transcription: string

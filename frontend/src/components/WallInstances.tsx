@@ -1,7 +1,3 @@
-// Wall cells map to three.js cube instances of size cellSize × WALL_HEIGHT × cellSize.
-// Cell (col, row) → world ((col+0.5)*c, (H-1-row+0.5)*c). World y becomes three z.
-// Block 12 will load full-scene GLBs; hide procedural walls when one is set so we
-// don't render walls twice.
 import { useEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import { useAppStore } from '../state/useAppStore'
@@ -50,10 +46,6 @@ export default function WallInstances() {
     <instancedMesh
       ref={meshRef}
       args={[undefined, undefined, positions.length]}
-      // Three.js culls based on the geometry's bounding sphere (one cell),
-      // ignoring per-instance positions. So when the camera angle pushes
-      // the local origin outside the frustum, the WHOLE mesh gets culled
-      // and walls vanish. With ~200 cells the draw cost is negligible.
       frustumCulled={false}
     >
       <boxGeometry args={[c, WALL_HEIGHT, c]} />

@@ -27,24 +27,15 @@ def get_session() -> Generator[Session, None, None]:
         yield session
 
 
-# Additive column migrations applied after schema.sql runs. SQLite supports
-# ADD COLUMN but not full DDL, so for now we only handle nullable columns.
-# Each entry: (table, column_name, type_ddl). PRAGMA table_info gates the
-# ALTER so this is idempotent on every startup.
 _COLUMN_MIGRATIONS: list[tuple[str, str, str]] = [
     ("spaces", "is_home", "INTEGER NOT NULL DEFAULT 0"),
     ("command_corrections", "corrected_params_json", "TEXT"),
 ]
 
 
-# Tables that existed in earlier revisions but no longer model anything alive.
-# Dropped on every startup so the SQLite file converges to the current schema.
 _DROPPED_TABLES: list[str] = ["labels"]
 
 
-# Columns retired after the schema.sql shipped them. SQLite ≥3.35 supports
-# ALTER TABLE ... DROP COLUMN; older versions silently swallow the error
-# via the IF EXISTS guard around PRAGMA table_info.
 _DROPPED_COLUMNS: list[tuple[str, str]] = [
     ("spaces", "description"),
 ]
@@ -68,9 +59,6 @@ def _drop_column_if_present(conn, table: str, column: str) -> None:
     try:
         conn.exec_driver_sql(f"ALTER TABLE {table} DROP COLUMN {column}")
     except Exception as e:  # noqa: BLE001
-        # SQLite <3.35 doesn't support DROP COLUMN. Leaving the orphan
-        # column is harmless because the SQLModel mapping no longer
-        # references it.
         _log.warning("could not drop %s.%s (%s) — leaving as orphan", table, column, e)
 
 

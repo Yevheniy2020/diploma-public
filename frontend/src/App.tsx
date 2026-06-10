@@ -1,6 +1,3 @@
-// 3-column operator console: top meta bar + header + (left aside | viewport |
-// right aside) + bottom ticker. Real backend integration intact — only the
-// surface layer is restyled.
 import { useCallback, useEffect, useState } from 'react'
 import { getRobotStatus, sendVoice } from './api/client'
 import type { RobotStatus } from './api/client'
@@ -47,7 +44,6 @@ function App() {
   const [error, setError] = useState<string | null>(null)
   const [voiceProcessing, setVoiceProcessing] = useState(false)
 
-  // Initial load: ?map=<id|name> URL param when present, else first map.
   useEffect(() => {
     let cancelled = false
     ;(async () => {
@@ -74,10 +70,6 @@ function App() {
     }
   }, [refreshMaps, loadMap])
 
-  // Multi-step queue drain: when the robot is idle (no path, no rotation
-  // target) and there are queued actions from a chained voice command,
-  // pop the next one and dispatch. Each dispatch fills setPath / rotateTo
-  // which flips the idle flags, so this effect re-fires on completion.
   const isMoving = useAppStore((s) => s.isMoving)
   const targetThetaSel = useAppStore((s) => s.targetTheta)
   const queueLen = useAppStore((s) => s.queuedActions.length)
@@ -86,8 +78,6 @@ function App() {
     if (queueLen === 0) return
     const next = useAppStore.getState().shiftQueuedAction()
     if (!next) return
-    // Build a VoiceResponse-shaped object so dispatchVoiceResponse can run
-    // the same code path as a fresh command.
     dispatchVoiceResponse({
       intent: next.intent,
       params: next.params,
@@ -110,8 +100,6 @@ function App() {
     setLastTranscription('')
     const started = Date.now()
 
-    // Visual-only: flip to "parsing" 250 ms in. The actual server-side phases
-    // (upload vs LLM) are fused in one fetch, so this is a best-effort hint.
     const parsingTimer = window.setTimeout(() => {
       if (useAppStore.getState().voicePipelineState === 'uploading') {
         setVoicePipelineState('parsing')
@@ -154,16 +142,10 @@ function App() {
 
       dispatchVoiceResponse(r)
 
-      // Multi-step: backend pre-simulated the rest of the chain. Queue
-      // follow-ups; the idle-watcher useEffect below dispatches each as
-      // the robot becomes idle.
       if (Array.isArray(r.follow_ups) && r.follow_ups.length > 0) {
         useAppStore.getState().enqueueActions(r.follow_ups)
       }
 
-      // Update anaphora memory after a successful NAVIGATE / RETURN_HOME so
-      // "назад" / "ще раз" can refer back. We capture robotPose at command
-      // time as the journey's start; the last waypoint is the goal.
       if (r.intent === 'NAVIGATE' || r.intent === 'RETURN_HOME') {
         const wp = ar.waypoints
         if (Array.isArray(wp) && wp.length > 0) {
@@ -362,7 +344,6 @@ function useRobotStatus(): RobotStatus | null {
         const r = await getRobotStatus()
         if (!cancelled) setStatus(r)
       } catch {
-        // Status endpoint is informational — silent failure is fine.
       }
     }
     void tick()

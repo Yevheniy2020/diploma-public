@@ -1,0 +1,44 @@
+{"text": "а тепер метрів зо два вперед", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "вернись де стояв спочатку", "intent": "RETURN_HOME", "lang": "uk"}
+{"text": "ша не їдь", "intent": "STOP", "lang": "uk"}
+{"text": "здай назад трошки", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "та зітри ту спальню вже", "intent": "DELETE_SPACE", "lang": "uk"}
+{"text": "what's the weather like today", "intent": "UNKNOWN", "lang": "en"}
+{"text": "убери балкондва", "intent": "DELETE_SPACE", "lang": "uk"}
+{"text": "тормозни", "intent": "STOP", "lang": "uk"}
+{"text": "новий простір ванна заводь", "intent": "START_SPACE", "lang": "uk"}
+{"text": "ееее ну шо там", "intent": "UNKNOWN", "lang": "uk"}
+{"text": "яка погода надворі", "intent": "UNKNOWN", "lang": "uk"}
+{"text": "робот go to кухня please", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "павернись ліворуч будь ласка", "intent": "ROTATE", "lang": "uk"}
+{"text": "зітри що я тут начертив", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "move трохи forward", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "cut the motors now", "intent": "STOP", "lang": "en"}
+{"text": "rotate a tiny bit clockwise", "intent": "ROTATE", "lang": "en"}
+{"text": "дай ванній назву санвузол", "intent": "RENAME_SPACE", "lang": "uk"}
+{"text": "switch the label balcony over to terrace", "intent": "RENAME_SPACE", "lang": "en"}
+{"text": "чеши на базу", "intent": "RETURN_HOME", "lang": "uk"}
+{"text": "я наплутав давай заново", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "хай кухня буде тепер їдальня", "intent": "RENAME_SPACE", "lang": "uk"}
+{"text": "атмєні всьо", "intent": "CANCEL_SPACE", "lang": "uk"}
+{"text": "do a quick u-turn", "intent": "ROTATE", "lang": "en"}
+{"text": "до зарядки повертай", "intent": "RETURN_HOME", "lang": "uk"}
+{"text": "пачинай чертить ділянку склад", "intent": "START_SPACE", "lang": "uk"}
+{"text": "ввімкни музику будь ласка", "intent": "UNKNOWN", "lang": "uk"}
+{"text": "канай на балкон давай", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "піди но до спальні швиденько", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "forget this outline", "intent": "CANCEL_SPACE", "lang": "en"}
+{"text": "ще метрик прямо і хорош", "intent": "DRIVE_RELATIVE", "lang": "uk"}
+{"text": "delete коридор label", "intent": "DELETE_SPACE", "lang": "uk"}
+{"text": "lock it in", "intent": "FINISH_SPACE", "lang": "en"}
+{"text": "фінал запам'ятай зону", "intent": "FINISH_SPACE", "lang": "uk"}
+{"text": "scrap the office tag", "intent": "DELETE_SPACE", "lang": "en"}
+{"text": "досить котитися", "intent": "STOP", "lang": "uk"}
+{"text": "починаєм нову зону спальня", "intent": "START_SPACE", "lang": "uk"}
+{"text": "крутни наліво трошки", "intent": "ROTATE", "lang": "uk"}
+{"text": "call the office study from now on", "intent": "RENAME_SPACE", "lang": "en"}
+{"text": "head on back to square one", "intent": "RETURN_HOME", "lang": "en"}
+{"text": "натеррасу руляй", "intent": "NAVIGATE", "lang": "uk"}
+{"text": "wrap up the room", "intent": "FINISH_SPACE", "lang": "en"}
+{"text": "берись малювати майстерню", "intent": "START_SPACE", "lang": "uk"}
+{"text": "we are done here save it", "intent": "FINISH_SPACE", "lang": "en"}

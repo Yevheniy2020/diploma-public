@@ -1,8 +1,3 @@
-// Right-sidebar panel that surfaces the active-learning retrain cycle
-// to the operator. Polls /api/voice/feedback/stats every 5 s; while a
-// retrain is running, polls /retrain/status every 2 s and renders a
-// ticking timer + phase string. Triggers retraining via POST. The model
-// hot-reloads in the backend on completion, so no page refresh needed.
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   getFeedbackStats,
@@ -97,8 +92,6 @@ function TrainingPanel() {
   const [status, setStatus] = useState<RetrainStatus | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [listOpen, setListOpen] = useState(false)
-  // Local 1-Hz ticker so the elapsed seconds increment smoothly between
-  // status polls (which run every 2 s).
   const [tick, setTick] = useState(0)
   const startedRef = useRef<number | null>(null)
 
@@ -126,13 +119,11 @@ function TrainingPanel() {
     }
   }, [])
 
-  // Initial load.
   useEffect(() => {
     refreshStats()
     refreshStatus()
   }, [refreshStats, refreshStatus])
 
-  // Background poll: stats every 5 s; status more often when running.
   useEffect(() => {
     const statsId = setInterval(refreshStats, STATS_POLL_MS)
     return () => clearInterval(statsId)
@@ -144,7 +135,6 @@ function TrainingPanel() {
     const id = setInterval(async () => {
       const fresh = await refreshStatus()
       if (fresh && fresh.state !== 'running') {
-        // Transition out of running — refresh stats and let the user know.
         refreshStats()
         if (fresh.state === 'completed') {
           toast.success(tRaw('training.toast.completed'))
@@ -160,16 +150,12 @@ function TrainingPanel() {
     return () => clearInterval(id)
   }, [status?.state, refreshStatus, refreshStats])
 
-  // 1-Hz ticker so the elapsed counter visibly moves while running.
   useEffect(() => {
     if (status?.state !== 'running') return
     const id = setInterval(() => setTick((t) => t + 1), 1000)
     return () => clearInterval(id)
   }, [status?.state])
 
-  // Phase-transition toasts: every time the running phase changes
-  // (e.g. preparing → paraphrasing), drop a small info toast so the
-  // operator gets visible feedback without having to watch the panel.
   const prevPhaseRef = useRef<string | null>(null)
   useEffect(() => {
     if (status?.state === 'running' && status.phase) {
@@ -203,13 +189,11 @@ function TrainingPanel() {
   const isFailed = status?.state === 'failed'
   const pending = stats?.pending_count ?? 0
 
-  // Live elapsed: prefer locally-ticked value when running, otherwise
-  // show whatever the server reported (mostly 0).
   const liveElapsed =
     isRunning && startedRef.current
       ? (Date.now() - startedRef.current) / 1000 + tick * 0
       : status?.elapsed_seconds ?? 0
-  void tick // keep the dep so elapsed re-renders every second
+  void tick
 
   return (
     <Section title={tr('training.title')}>
@@ -270,7 +254,6 @@ function TrainingPanel() {
         open={listOpen}
         onClose={() => {
           setListOpen(false)
-          // Refresh in case user edited / deleted while modal was open.
           refreshStats()
         }}
       />
